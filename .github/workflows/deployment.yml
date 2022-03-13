@@ -24,6 +24,7 @@ jobs:
       run: |
         node -v
         npm i -g hexo-cli
+        npm install --save bulma-stylus@0.8.0 hexo-pagination@^2.0.0 hexo-renderer-inferno@^0.1.3
         npm i
         hexo clean
         hexo g
