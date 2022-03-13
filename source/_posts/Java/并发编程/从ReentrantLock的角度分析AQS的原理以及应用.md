@@ -1,3 +1,5 @@
+title: 从ReentrantLock的角度分析AQS的原理以及应用
+---
 ### 从ReentrantLock的角度分析AQS的原理以及应用
 
 > 本文转载自美团技术团队[从ReentrantLock的实现看AQS的原理及应用](https://tech.meituan.com/2019/12/05/aqs-theory-and-apply.html)
