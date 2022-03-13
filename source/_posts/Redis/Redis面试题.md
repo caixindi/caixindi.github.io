@@ -1,3 +1,17 @@
+title: Java面试
+date: 2022-03-12
+categories:
+- Java
+tags:
+- Java面经
+  language: zh-CN
+  toc: true
+  providers:
+    cdn: loli
+    fontcdn: loli
+    iconcdn: loli
+---
+
 #### 缓存与数据库双写不一致的问题
 
 1. 延迟双删
