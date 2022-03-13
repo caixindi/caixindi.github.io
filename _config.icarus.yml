@@ -203,22 +203,22 @@ widgets:
         # Author name
         author: Cindy
         # Author title
-        author_title: Web Developer
+        author_title: Developer
         # Author's current location
-        location: Earth, Solar System
+        location: Earth, Wuhan
         # URL or path to the avatar image
-        avatar: 
+        avatar: 'https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/20220313221114.png'
         # Whether show the rounded avatar image
         avatar_rounded: false
         # Email address for the Gravatar
         gravatar: 
         # URL or path for the follow button
-        follow_link: 'https://github.com/ppoffice'
+        follow_link: 'https://github.com/caixindi'
         # Links to be shown on the bottom of the profile widget
         social_links:
             Github:
                 icon: fab fa-github
-                url: 'https://github.com/ppoffice'
+                url: 'https://github.com/caixindi'
             Facebook:
                 icon: fab fa-facebook
                 url: 'https://facebook.com'
