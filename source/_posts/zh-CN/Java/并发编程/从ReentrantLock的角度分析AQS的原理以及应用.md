@@ -24,7 +24,7 @@ Java中的大部分同步类（Lock、Semaphore、ReentrantLock等）都是基�
 下面列出本篇文章的大纲和思路，以便于大家更好地理解：
 
 ![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/9d182d944e0889c304ef529ba50a4fcd205214.png)
-
+<!--more-->
 ## 1 ReentrantLock
 
 ### 1.1 ReentrantLock特性概览
