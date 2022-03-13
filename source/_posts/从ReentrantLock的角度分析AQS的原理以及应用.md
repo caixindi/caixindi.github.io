@@ -5,12 +5,8 @@ categories:
 - Java
 tags:
 - Java并发编程
-  language: zh-CN
-  toc: true
-  providers:
-    cdn: loli
-    fontcdn: loli
-    iconcdn: loli
+language: zh-CN
+toc: true
 ---
 
 ### 从ReentrantLock的角度分析AQS的原理以及应用

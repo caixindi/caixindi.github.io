@@ -5,12 +5,8 @@ categories:
 - Java
 tags:
 - Java面经
-  language: zh-CN
-  toc: true
-  providers:
-    cdn: loli
-    fontcdn: loli
-    iconcdn: loli
+language: zh-CN
+toc: true
 ---
 
 #### 缓存与数据库双写不一致的问题
