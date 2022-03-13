@@ -24,9 +24,9 @@ widgets:
         # Author's current location
         location: Earth, Wuhan
         # URL or path to the avatar image
-        avatar: 
+        avatar: 'https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/20220313221114.png'
         # Whether show the rounded avatar image
-        avatar_rounded: false
+        avatar_rounded: true
         # Email address for the Gravatar
         gravatar: 
         # URL or path for the follow button
