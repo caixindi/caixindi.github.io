@@ -1,3 +1,4 @@
+---
 title: 从ReentrantLock的角度分析AQS的原理以及应用
 date: 2022-03-12
 categories:
