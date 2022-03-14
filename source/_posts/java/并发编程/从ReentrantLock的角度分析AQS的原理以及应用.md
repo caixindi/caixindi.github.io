@@ -19,15 +19,16 @@ Java中的大部分同步类（Lock、Semaphore、ReentrantLock等）都是基�
 
 下面列出本篇文章的大纲和思路，以便于大家更好地理解：
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/9d182d944e0889c304ef529ba50a4fcd205214.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/9d182d944e0889c304ef529ba50a4fcd205214.png)
 <!--more-->
+
 ## 1 ReentrantLock
 
 ### 1.1 ReentrantLock特性概览
 
 ReentrantLock意思为可重入锁，指的是一个线程能够对一个临界资源重复加锁。为了帮助大家更好地理解ReentrantLock的特性，我们先将ReentrantLock跟常用的Synchronized进行比较，其特性如下（蓝色部分为本篇文章主要剖析的点）：
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/412d294ff5535bbcddc0d979b2a339e6102264.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/412d294ff5535bbcddc0d979b2a339e6102264.png)
 
 下面通过伪代码，进行更加直观的比较：
 
@@ -126,7 +127,7 @@ static final class FairSync extends Sync {
 
 首先，我们通过下面的架构图来整体了解一下AQS框架：
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/82077ccf14127a87b77cefd1ccf562d3253591.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/82077ccf14127a87b77cefd1ccf562d3253591.png)
 
 - 上图中有颜色的为Method，无颜色的为Attribution。
 - 总的来说，AQS框架共分为五层，自上而下由浅入深，从AQS对外暴露的API到底层基础数据。
@@ -134,7 +135,7 @@ static final class FairSync extends Sync {
 
 下面我们会从整体到细节，从流程到方法逐一剖析AQS框架，主要分析过程如下：
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/d2f7f7fffdc30d85d17b44266c3ab05323338.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/d2f7f7fffdc30d85d17b44266c3ab05323338.png)
 
 ### 2.1 原理概览
 
@@ -144,7 +145,7 @@ CLH：Craig、Landin and Hagersten队列，是单向链表，AQS中的队列是C
 
 主要原理图如下：
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/7132e4cef44c26f62835b197b239147b18062.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/7132e4cef44c26f62835b197b239147b18062.png)
 
 AQS使用一个Volatile的int类型的成员变量来表示同步状态，通过内置的FIFO队列来完成资源获取的排队工作，通过CAS完成对State值的修改。
 
@@ -152,7 +153,7 @@ AQS使用一个Volatile的int类型的成员变量来表示同步状态，通过
 
 先来看下AQS中最基本的数据结构——Node，Node即为上面CLH变体队列中的节点。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/960271cf2b5c8a185eed23e98b72c75538637.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/960271cf2b5c8a185eed23e98b72c75538637.png)
 
 解释一下几个方法和属性值的含义：
 
@@ -202,7 +203,7 @@ private volatile int state;
 
 这几个方法都是Final修饰的，说明子类中无法重写它们。我们可以通过修改State字段表示的同步状态来实现多线程的独占模式和共享模式（加锁过程）。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/27605d483e8935da683a93be015713f331378.png)![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/3f1e1a44f5b7d77000ba4f9476189b2e32806.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/27605d483e8935da683a93be015713f331378.png)![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/3f1e1a44f5b7d77000ba4f9476189b2e32806.png)
 
 对于我们自定义的同步工具，需要自定义获取同步状态和释放状态的方式，也就是AQS架构图中的第一层：API层。
 
@@ -222,11 +223,11 @@ private volatile int state;
 
 以非公平锁为例，这里主要阐述一下非公平锁与AQS之间方法的关联之处，具体每一处核心方法的作用会在文章后面详细进行阐述。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/b8b53a70984668bc68653efe9531573e78636.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/b8b53a70984668bc68653efe9531573e78636.png)
 
 为了帮助大家理解ReentrantLock和AQS之间方法的交互过程，以非公平锁为例，我们将加锁和解锁的交互流程单独拎出来强调一下，以便于对后续内容的理解。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/7aadb272069d871bdee8bf3a218eed8136919.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/7aadb272069d871bdee8bf3a218eed8136919.png)
 
 加锁：
 
@@ -244,7 +245,7 @@ private volatile int state;
 
 通过上面的描述，大概可以总结出ReentrantLock加锁解锁时API层核心方法的映射关系。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/f30c631c8ebbf820d3e8fcb6eee3c0ef18748.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/f30c631c8ebbf820d3e8fcb6eee3c0ef18748.png)
 
 ## 2.3 通过ReentrantLock理解AQS
 
@@ -252,7 +253,7 @@ ReentrantLock中公平锁和非公平锁在底层是相同的，这里以非公�
 
 在非公平锁中，有一段这样的代码：
 
-```
+```java
 // java.util.concurrent.locks.ReentrantLock
 
 static final class NonfairSync extends Sync {
@@ -269,7 +270,7 @@ static final class NonfairSync extends Sync {
 
 看一下这个Acquire是怎么写的：
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 public final void acquire(int arg) {
@@ -280,7 +281,7 @@ public final void acquire(int arg) {
 
 再看一下tryAcquire方法：
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 protected boolean tryAcquire(int arg) {
@@ -300,7 +301,7 @@ protected boolean tryAcquire(int arg) {
 
 获取锁失败后，会执行addWaiter(Node.EXCLUSIVE)加入等待队列，具体实现方法如下：
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 private Node addWaiter(Node mode) {
@@ -329,7 +330,7 @@ private final boolean compareAndSetTail(Node expect, Node update) {
 - 将New中Node的Prev指针指向Pred。
 - 通过compareAndSetTail方法，完成尾节点的设置。这个方法主要是对tailOffset和Expect进行比较，如果tailOffset的Node和Expect的Node地址是相同的，那么设置Tail的值为Update的值。
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 static {
@@ -349,7 +350,7 @@ static {
 
 - 如果Pred指针是Null（说明等待队列中没有元素），或者当前Pred指针和Tail指向的位置不同（说明被别的线程已经修改），就需要看一下Enq的方法。
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 private Node enq(final Node node) {
@@ -376,13 +377,13 @@ private Node enq(final Node node) {
 1. 当没有线程获取到锁时，线程1获取锁成功。
 2. 线程2申请锁，但是锁被线程1占有。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/e9e385c3c68f62c67c8d62ab0adb613921117.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/e9e385c3c68f62c67c8d62ab0adb613921117.png)
 
 1. 如果再有线程要获取锁，依次在队列中往后排队即可。
 
 回到上边的代码，hasQueuedPredecessors是公平锁加锁时判断等待队列中是否存在有效节点的方法。如果返回False，说明当前线程可以争取共享资源；如果返回True，说明队列中存在有效节点，当前线程必须加入到等待队列中。
 
-```
+```java
 // java.util.concurrent.locks.ReentrantLock
 
 public final boolean hasQueuedPredecessors() {
@@ -421,7 +422,7 @@ if (t == null) { // Must initialize
 
 回到最初的源码：
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 public final void acquire(int arg) {
@@ -436,7 +437,7 @@ public final void acquire(int arg) {
 
 下面我们从“何时出队列？”和“如何出队列？”两个方向来分析一下acquireQueued源码：
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 final boolean acquireQueued(final Node node, int arg) {
@@ -470,7 +471,7 @@ final boolean acquireQueued(final Node node, int arg) {
 
 注：setHead方法是把当前节点置为虚节点，但并没有修改waitStatus，因为它是一直需要用的数据。
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 private void setHead(Node node) {
@@ -505,7 +506,7 @@ private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
 
 parkAndCheckInterrupt主要用于挂起当前线程，阻塞调用栈，返回当前线程的中断状态。
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 private final boolean parkAndCheckInterrupt() {
@@ -516,11 +517,11 @@ private final boolean parkAndCheckInterrupt() {
 
 上述方法的流程图如下：
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/c124b76dcbefb9bdc778458064703d1135485.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/c124b76dcbefb9bdc778458064703d1135485.png)
 
 从上图可以看出，跳出当前循环的条件是当“前置节点是头结点，且当前线程获取锁成功”。为了防止因死循环导致CPU资源被浪费，我们会判断前置节点的状态来决定是否要将当前线程挂起，具体挂起流程用流程图表示如下（shouldParkAfterFailedAcquire流程）：
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/9af16e2481ad85f38ca322a225ae737535740.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/9af16e2481ad85f38ca322a225ae737535740.png)
 
 从队列中释放节点的疑虑打消了，那么又有新问题了：
 
@@ -531,7 +532,7 @@ private final boolean parkAndCheckInterrupt() {
 
 acquireQueued方法中的Finally代码：
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 final boolean acquireQueued(final Node node, int arg) {
@@ -555,7 +556,7 @@ final boolean acquireQueued(final Node node, int arg) {
 
 通过cancelAcquire方法，将Node的状态标记为CANCELLED。接下来，我们逐行来分析这个方法的原理：
 
-```
+```java
 // java.util.concurrent.locks.AbstractQueuedSynchronizer
 
 private void cancelAcquire(Node node) {
@@ -609,25 +610,25 @@ private void cancelAcquire(Node node) {
 
 当前节点是尾节点。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/b845211ced57561c24f79d56194949e822049.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/b845211ced57561c24f79d56194949e822049.png)
 
 当前节点是Head的后继节点。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/ab89bfec875846e5028a4f8fead32b7117975.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/ab89bfec875846e5028a4f8fead32b7117975.png)
 
 当前节点不是Head的后继节点，也不是尾节点。
 
-![img](../../img/%E4%BB%8EReentrantLock%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90AQS%E7%9A%84%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E5%BA%94%E7%94%A8/45d0d9e4a6897eddadc4397cf53d6cd522452.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/45d0d9e4a6897eddadc4397cf53d6cd522452.png)
 
 通过上面的流程，我们对于CANCELLED节点状态的产生和变化已经有了大致的了解，但是为什么所有的变化都是对Next指针进行了操作，而没有对Prev指针进行操作呢？什么情况下会对Prev指针进行操作？
 
 > 执行cancelAcquire的时候，当前节点的前置节点可能已经从队列中出去了（已经执行过Try代码块中的shouldParkAfterFailedAcquire方法了），如果此时修改Prev指针，有可能会导致Prev指向另一个已经移除队列的Node，因此这块变化Prev指针不安全。 shouldParkAfterFailedAcquire方法中，会执行下面的代码，其实就是在处理Prev指针。shouldParkAfterFailedAcquire是获取锁失败的情况下才会执行，进入该方法后，说明共享资源已被获取，当前节点之前的节点都不会出现变化，因此这个时候变更Prev指针比较安全。
->
-> ```
-> do {
-> 	node.prev = pred = pred.prev;
-> } while (pred.waitStatus > 0);
-> ```
+
+```java
+do {
+	node.prev = pred = pred.prev;
+}while (pred.waitStatus > 0);
+```
 
 ### 2.3.3 如何解锁
 

@@ -1,3 +1,14 @@
+---
+title: 树莓派EdgeX+TensorflowLite实现机器学习推理
+date: 2022-01-27
+categories:
+- EdgeX
+tags:
+- EdgeX机器学习以及推理
+language: zh-CN
+toc: true
+---
+
 ### 安装 TensorFlow Lite 解释器
 
 需要根据平台以及python版本选择安装，下面是linux(arm64)平台的，python版本为3.7
@@ -7,6 +18,8 @@ pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-
 ```
 
 具体参考https://tensorflow.google.cn/lite/guide/python
+
+<!--more-->
 
 ### 使用 tflite_runtime 运行推理
 

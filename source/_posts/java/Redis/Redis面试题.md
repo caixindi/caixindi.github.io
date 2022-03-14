@@ -1,10 +1,10 @@
 ---
-title: Java面试
+title: Redis面经（持续更新）
 date: 2022-03-12
 categories:
 - Java
 tags:
-- Java面经
+- Redis
 language: zh-CN
 toc: true
 ---
@@ -18,6 +18,8 @@ toc: true
 5. 不用缓存，会出现数据穿透，数据库无法承载高并发
 6. canal
 7. 针对第五点，怎么办？（tidb）
+
+<!--more-->
 
 #### 为什么redis单线程性能如此高？
 

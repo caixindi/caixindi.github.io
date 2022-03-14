@@ -1,3 +1,13 @@
+---
+title: edgex部署机器学习模型
+categories:
+- EdgeX
+tags:
+- EdgeX机器学习以及推理
+language: zh-CN
+toc: true
+---
+
 总体上分为三个部分：
 
 - 设置EdgeX触发器，当有图片事件的时候，触发触发器，触发器将图片数据发送给监听程序
@@ -6,13 +16,15 @@
 
 发送图片数据，利用虚拟设备sample-image:
 
-![image-20211009124714478](../img/edgex部署机器学习模型/image-20211009124714478.png)
+<!--more-->
+
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211009124714478.png)
 
 edgex 打印log
 
-![image-20211009124739037](../img/edgex部署机器学习模型/image-20211009124739037.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211009124739037.png)
 
 显示接收到数据，触发器触发，之后便会发送数据到监听端，然后发送给推理端进行推理，最后返回结果
 
-![image-20211009130052400](../img/edgex部署机器学习模型/image-20211009130052400.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211009130052400.png)
 

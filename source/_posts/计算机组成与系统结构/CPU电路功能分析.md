@@ -1,3 +1,14 @@
+---
+title: CPU电路功能分析
+date: 2021-09-01
+categories:
+- 计算机组成与体系结构
+tags:
+- 计算机组成与体系结构
+language: zh-CN
+toc: true
+---
+
 ### CPU电路功能分析
 
 #### 一、CPU控制器的工作过程
@@ -16,6 +27,8 @@ CPU控制器会对R型指令高六位操作码部分以及低六位功能码部�
 
 答：其他类型指令的操作码不同，会从电路上进行设计，从而屏蔽其他指令低六位对最终ALU_Control的影响。
 
+<!--more-->
+
 #### 二、CPU数据通路电路分析
 
 ##### 1.分线器分离字段
@@ -30,7 +43,7 @@ CPU控制器会对R型指令高六位操作码部分以及低六位功能码部�
 
 ##### 3.寄存器堆
 
-<img src="../img/CPU电路功能分析/QQ截图20210408222904.png" alt="QQ截图20210408222904" style="zoom: 80%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408222904.png" style="zoom: 80%;" />
 
 L_S为控制信号线，当且仅当L_S=1时，才能进行寄存器写操作。
 
@@ -46,7 +59,7 @@ rdata_A(31:0)、rdata_B(31:0)为输出数据线，Wt_data(31:0)为写入数据�
 
 ##### 5.ALU运算单元
 
-<img src="../img/CPU电路功能分析/QQ截图20210408224319.png" alt="QQ截图20210408224319" style="zoom:80%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408224319.png" style="zoom:80%;" />
 
 操作数输入端口：A(31:0)和B(31:0)，这两个端口输入需要执行运算的操作数。
 
@@ -121,7 +134,7 @@ res=A-B=R[17]-R[18],如果R[17]==R[18]，res=zero,置zero=1，使得多路选择
 
 jump指令的操作码为000010，经CPU控制器解析，置信号Jump=1,Branch=0,当jump=1时，Jump_addr直接传至PC
 
-<img src="../img/CPU电路功能分析/image-20210410142337248.png" alt="image-20210410142337248" style="zoom: 67%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20210410142337248.png" style="zoom: 67%;" />
 
 
 

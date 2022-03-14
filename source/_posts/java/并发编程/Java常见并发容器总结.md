@@ -19,6 +19,8 @@ JDK提供的并发容器大部分都在`java.util.concurrent(juc)`包
 - `BlockingQueue`：这个一个接口，JDK内部通过链表、数组等方式实现了这个接口。表示阻塞队列，适合用于作为数据共享的通道。
 - `ConcurrentSkipListMap`：线程安全的跳表。
 
+<!--more-->
+
 #### `ConcurrentHashMap`
 
 ​	首先`HashMap`不是线程安全 的，在并发场景下如果要保证一种可行的方式是使用`Collections.synchronizedMap()`方法来包装`HashMap`。但这是通过使用一个全局锁来做到并发控制，这对性能有很大的影响。

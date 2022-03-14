@@ -1,3 +1,14 @@
+---
+title: Is Dark Silicon Useful
+date: 2021-12-03
+categories:
+- CS217
+tags:
+- 暗硅
+language: zh-CN
+toc: true
+---
+
 #### 暗硅（Dark Silicon）
 
 [Is Dark silicon useful?](https://ieeexplore.ieee.org/document/6241647 )
@@ -6,7 +17,7 @@
 
 ​		如下图所示，可以很好地解释暗硅是怎么产生的。
 
-<img src="../img/Is Dark Silicon Useful/ce06b56b28de6bb746fed557fd46f653_r.jpg" alt="img"  />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/ce06b56b28de6bb746fed557fd46f653_r.jpg"/>
 
 对于一个65nm的4核处理器，假定在额定功率允许的情况下其四个核心能够同时全速工作。当工艺尺寸缩小到32nm的时候，之前4核处理器的面积就可以容纳16个核心。但现实是，这16个核心并不会都工作。能够同时工作的仍然只有四个核心。为什么？假设两代工艺之间缩放因子是S，那么S=65nm/32nm=2，芯片的晶体管数量将乘以$S^2$，即4倍；晶体管的切换频率可以乘以$S$，即2倍，因此总的计算能力将乘以$S^3$，即8倍。由于特征尺寸减小了一半，故晶体管的电容将减小S倍。由于总功耗与晶体管数量和切换频率成正比，和电容成反比，总功耗将变成之前的$S^2$倍，即4倍。为了保持总功耗不变，芯片的利用率只能变为原来的$\frac{1}{S^2}$，即原来的1/4。所以即使有16个核，仍然只有4个核可以工作。
 

@@ -1,3 +1,14 @@
+---
+title: device-sdk-go源码分析
+date: 2022-01-27
+categories:
+- EdgeX
+tags:
+- EdgeX概念
+language: zh-CN
+toc: true
+---
+
 ### device-sdk-go源码分析
 
 #### device-sdk-go项目目录结构
@@ -42,6 +53,8 @@
     └─local
 
 ```
+
+<!--more-->
 
 接下来以官方提供的example项目包为例，分析device-sdk-go的项目结构和相关功能。
 

@@ -1,8 +1,21 @@
+---
+title: Git宝典（持续更新）
+date: 2021-12-03
+categories:
+- Git
+tags:
+- Git使用指南
+language: zh-CN
+toc: true
+---
+
 ### Git 简介
 
 Git is a [free and open source](https://git-scm.com/about/free-and-open-source) distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
 
 Git is [easy to learn](https://git-scm.com/doc) and has a [tiny footprint with lightning fast performance](https://git-scm.com/about/small-and-fast). It outclasses SCM tools like Subversion, CVS, Perforce, and ClearCase with features like [cheap local branching](https://git-scm.com/about/branching-and-merging), convenient [staging areas](https://git-scm.com/about/staging-area), and [multiple workflows](https://git-scm.com/about/distributed).
+
+<!--more-->
 
 ### Git 安装
 
@@ -86,7 +99,7 @@ nothing to commit, working directory clean
 
 所以`git add`不能仅仅只理解为将一个文件添加到项目中，而是将内容准确地添加到下一次的提交中去。当然，如果需要查看尚未暂存的文件哪些地方改变了，可以执行`git diff`命令，如图所示：
 
-![image-20211120201214865](../img/Git%20%E7%AE%80%E4%BB%8B/image-20211120201214865.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211120201214865.png)
 
 这个命令可以比较工作区中的当前文件和暂存区域文件之间快照的差异。当然如果需要知道暂存区域的文件和最后一次文件提交之间的差异，可以执行`git diff --staged`命令。
 
@@ -146,7 +159,7 @@ $ git add file_to
 
 使用`git log`命令可以查看Git的提交历史信息，比如：
 
-![image-20211120222647039](../img/Git%20%E7%AE%80%E4%BB%8B/image-20211120222647039.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211120222647039.png)
 
 直接使用该命令并且不添加任何参数，则会按时间的先后顺序一次输出该项目所有的提交历史，时间越新的排在越上面，包括每个提交的SHA-A校验和，作者的名字和电子邮件地址。当然，`git log`命令提供了许多的选项，使用`git log --pretty=format`可以定制记录的显示格式，format常用的选项如下表格所示：
 
@@ -245,7 +258,7 @@ Git支持两种标签，分别是轻量标签(lightweight)和附注标签(annota
 
 当前你也可以为过去的提交打标签，只需要知道过去提交的校验和(可以使用`git log --pretty=oneline`查询得到)，如图：
 
-![image-20211121214819967](../img/Git%20%E7%AE%80%E4%BB%8B/image-20211121214819967.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211121214819967.png)
 
 通过`git tag -a v1.0-dev fe4ee36`，这样就可以为之前的提交打上标签了。
 

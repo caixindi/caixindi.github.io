@@ -1,3 +1,14 @@
+---
+title: WindowsTerminal环境搭建
+date: 2021-12-03
+categories:
+- 杂七杂八
+tags:
+- 好看的PowerShell
+language: zh-CN
+toc: true
+---
+
 ### 1.安装 Windows Terminal
 
 ​	从 **Microsoft Store** 搜索下载
@@ -9,6 +20,8 @@
 ### 3.安装 Powershell 插件
 
 ​	打开刚装好的新版 powershell,，运行以下命令:
+
+<!--more-->
 
 ```powershell
 # 1. 安装 PSReadline 包，该插件可以让命令行很好用，类似 zsh

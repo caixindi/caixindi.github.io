@@ -1,3 +1,13 @@
+---
+title: k8s+EdgeX部署
+categories:
+- EdgeX
+tags:
+- EdgeX构建
+language: zh-CN
+toc: true
+---
+
 基于Ubuntu18.04 
 
 需要两个CPU核心
@@ -14,6 +24,8 @@ $ vim /etc/hosts
 192.168.0.200 master
 192.168.0.201 node1
 192.168.0.202 node2
+
+<!--more-->
 
 ##### 第2步：时间同步
 

@@ -1,6 +1,19 @@
-[Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey](https://www.rle.mit.edu/eems/wp-content/uploads/2017/11/2017_pieee_dnn.pdf)
+---
+title: Efficient Processing of Deep  Neural Networks: A Tutorial and Survey
+date: 2021-12-03
+categories:
+- CS217
+tags:
+- 深度神经网络的高效处理：教程和综述
+language: zh-CN
+toc: true
+---
+
+### [Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey](https://www.rle.mit.edu/eems/wp-content/uploads/2017/11/2017_pieee_dnn.pdf)
 
 ​		这是一篇有关于深度神经网络加速的综速。本文介绍了DNN的历史背景和作用，介绍的DNN的结构以及当前流行的DNN模型。后面不仅仅介绍了如何从硬件层面加速神经网络，也介绍了从算法，从软件，从软硬件结合的层面实现DNN加速。
+
+<!--more-->
 
 #### 1. DNN的背景
 
@@ -20,7 +33,7 @@
 
   这里讲了神经网络的发展历程，如图所示：
 
-  <img src="../img/Efficient Processing of Deep  Neural Networks A Tutorial  and Survey/DNN Timeline.png" alt="image-20210611222909537"  />
+  <img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/DNN%20Timeline.png" />
 
   主要就是神经网络是什么时候提出的（1940年代），但直到1980年代后期出现了手写数字识别的LeNet网络后才被广泛使用。随着数据量增大、计算能力的提升和算法的发展，2011年微软的语音识别系统出现，基于DNN的应用才蓬勃发展起来。本文主要关注的是DNN推理的高效处理，具体的如何让DNN推理在资源有限的嵌入式设备（而不是云）上执行。
 
@@ -50,7 +63,7 @@
 
   文中给出了一些热门的DNN模型，如表所示：
 
-  <img src="../img/Efficient Processing of Deep  Neural Networks A Tutorial  and Survey/Summary of Popular DNNS-16342872863077.png" alt="image-20210611230423093"  />
+  <img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Summary%20of%20Popular%20DNNS-16342872863077.png" />
 
   文中通过上表给出了DNN的几个趋势，一个是网络越神，准确性越高；另一个是大部分计算都在卷积层，并且卷积层在权重层面也是主要方面，所以硬件加速的重点应该放在解决卷积层效率上。
 
@@ -78,7 +91,7 @@
 
 ​		CONV 和 FC 层的基本组成部分是乘法累加 (MAC) 操作，它很容易实现并行化。 从架构层面来分，主要分为时间架构（CPU/GPU）和空间架构（FPGA）。如图所示：
 
-<img src="../img/Efficient Processing of Deep  Neural Networks A Tutorial  and Survey/image-20211015200717712.png"  />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015200717712.png"  />
 
 ​		CPU/GPU相对于通用架构，可以利用向量（SIMD）或者并行线程（SIMT）来提高并行性，这种架构对大量的ALU进行集中控制，但是这些ALU只能从存储器中获取数据，不能直接通信。对于任意数据流图中的一个计算，该架构往往需要多个周期才能完成。
 
@@ -94,7 +107,7 @@
 
   - 多级内存层次结构（如图）
 
-    <img src="../img/Efficient Processing of Deep  Neural Networks A Tutorial  and Survey/Memory hierarchy and data movement energy.png" alt="image-20210612004107914"  />
+    <img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Memory%20hierarchy%20and%20data%20movement%20energy.png"/>
 
     例如，与从 DRAM 中获取数据相比，从 RF 或相邻 PE 获取数据所需的能量要低一到两个数量级。因此，每次将一条数据从高能耗层次移动到低能耗层次时，我们希望尽可能多得重用该数据，从而最大限度地减少对高能耗层次的访存。
 

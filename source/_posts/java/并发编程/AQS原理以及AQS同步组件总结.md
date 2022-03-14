@@ -1,10 +1,23 @@
+---
+title: AQS原理以及AQS同步组件总结
+date: 2022-03-12
+categories:
+- Java
+tags:
+- Java并发编程
+language: zh-CN
+toc: true
+---
+
 ### AQS介绍
 
 AQS全称（AbstractQueuedSynchronizer）,即抽象队列同步器。该类位于`java.util.concurrent.locks`包下。
 
-![image-20220305214816395](../../img/AQS%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8AAQS%E5%90%8C%E6%AD%A5%E7%BB%84%E4%BB%B6%E6%80%BB%E7%BB%93/image-20220305214816395.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20220305214816395.png)
 
 AQS是一个抽象类，主要用来构建锁和同步器。AQS 为构建锁和同步器提供了一些通用功能的是实现，因此，使用 AQS 能简单且高效地构造出应用广泛的大量的同步器，比如 `ReentrantLock`，`Semaphore`，其他的诸如 `ReentrantReadWriteLock`，`SynchronousQueue`，`FutureTask`(jdk1.7) 等等都是基于 AQS 的。
+
+<!--more-->
 
 ### AQS原理
 
@@ -14,7 +27,7 @@ AQS的核心思想是，如果请求的共享资源空闲，则将当前请求�
 
 AQS原理图如下所示：
 
-![image-20220305220429846](../../img/AQS%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8AAQS%E5%90%8C%E6%AD%A5%E7%BB%84%E4%BB%B6%E6%80%BB%E7%BB%93/image-20220305220429846.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20220305220429846.png)
 
 AQS使用一个int成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。
 
@@ -629,7 +642,7 @@ public int await() throws InterruptedException, BrokenBarrierException {
 
 CLH同步队列结构图如下所示：
 
-![image-20220305234249027](../../img/AQS%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8AAQS%E5%90%8C%E6%AD%A5%E7%BB%84%E4%BB%B6%E6%80%BB%E7%BB%93/image-20220305234249027.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20220305234249027.png)
 
 ```java
     static final class Node {
@@ -788,4 +801,4 @@ CLH同步队列结构图如下所示：
 
 CLH同步队列线程FIFO，首节点的线程释放同步状态后，将会唤醒它的后继节点(next)，而后继节点将会在获取同步状态成功时将会设置为首节点。head执行该节点并断开原来的首节点的next和当前节点的prev，注意在这个过程中时不需要使用CAS来保证的，因为只有一个线程能够成功获取同步状态。过程如下图所示：
 
-![image-20220307170846779](../../img/AQS%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8AAQS%E5%90%8C%E6%AD%A5%E7%BB%84%E4%BB%B6%E6%80%BB%E7%BB%93/image-20220307170846779.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20220307170846779.png)

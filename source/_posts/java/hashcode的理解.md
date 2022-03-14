@@ -1,8 +1,23 @@
+---
+title: 关于hashcode的理解
+date: 2021-12-03
+categories:
+- Java
+tags:
+- Java知识点
+language: zh-CN
+toc: true
+---
+
+### 关于hashcode的理解
+
 > 什么是hash
 
 ![image-20211012163401291](D:/Typora-note/img/hashcode%E7%9A%84%E7%90%86%E8%A7%A3/image-20211012163401291.png)
 
 ​	hash其实就是一个函数，其中实现了计算hash值的方法，用来得到hash值的算法有许多种，常见的就有:直接取余法，乘法取整法，平方取中法。
+
+<!--more-->
 
 > 位运算符
 

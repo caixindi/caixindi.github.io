@@ -1,3 +1,14 @@
+---
+title: 硬件加速器背景介绍（Lecture1）
+date: 2021-12-03
+categories:
+- CS217
+tags:
+- CS217 Lecture
+language: zh-CN
+toc: true
+---
+
 ##### 硬件加速器背景
 
 ​	如今计算能力限制了训练机器学习模型的工作，如果我们有更快的处理器我们可以运行更大的模型。
@@ -8,6 +19,8 @@
 - GPU：大量线程、SIMD、HBM（高带宽存储器）
 - FPGA：LUTs（查找表）、DSP、BRAM
 - TPU：MM Unit、BRAM
+
+<!--more-->
 
 ##### 关键问题
 

@@ -1,3 +1,14 @@
+---
+title: Anatomy of High-Performance Matrix Multiplication
+date: 2021-12-03
+categories:
+- CS217
+tags:
+- 高性能矩阵乘法剖析
+language: zh-CN
+toc: true
+---
+
 ##### [Anatomy of High-Performance Matrix Multiplication](https://www.cs.utexas.edu/users/pingali/CS378/2008sp/papers/gotoPaper.pdf)
 
 ​	现在我们进行机器学习训练，通常都会使用一些机器学习库，比如TensorFlow这样的库，并且在训练机器学习模型时，通常这些库对性能的提升是数量级的提升。以下以卷积计算为例，去剖析高性能矩阵计算。
@@ -20,23 +31,25 @@ for filter in 0..num_filters
                             input[channel, out_h + k_h, out_w + k_w]
 ```
 
+​	<!--more-->
+
 ​	这是一个六层嵌套的for循环，也是通常我们能想到的卷积计算代码，但是它的执行效率非常低。主要原因就是嵌套for循环使得数据访问非常困难，这使得缓存利用率极低，缓存中的数据经常被换入换出。
 
 ​	在逻辑上我们将矩阵/图像/张量看出是多维数据，而事实上不管你逻辑上几维的数据，都将存储在线性的一维计算机内存中。为此，如何将这些高维数据按照一定的次序展开到内存中非常重要。
 
 ​	大部分现代dl库使用行主序存储，所以同一行的连续元素将被相邻存储，这也意味在访问内存时，第一维度（行）变化速度最慢。对于四维张量，我们知道有NCHW,NHWC等存储顺序，N代表数量， C代表channel，H代表高度，W代表宽度。比如下图所示，现有N块H×W图像的C通道，那么相同通道图像都是重叠的，同一通道C的所有像素也是重叠的。
 
-<img src="../img/Anatomy of High-Performance Matrix Multiplication/storage-order.png" alt="storage-order" style="zoom:80%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/storage-order.png" style="zoom:80%;" />
 
 ​	上面描述的只是一个很简单的卷积，但其执行速度已经很慢了，随着步长，填充等参数增加只会变得更加复杂。
 
 ​	通用矩阵乘（GEMM，General Matrix Multiplication）可以用于实现卷积。将图像块放到一个矩阵中的操作成为im2col，im2col 是计算机视觉领域中将图片的不同通道（channel）转换成矩阵的列（column）的计算过程。Caffe 在计算卷积时，首先用 im2col 将输入的三维数据转换成二维矩阵，使得卷积计算可表示成两个二维矩阵相乘，从而充分利用已经优化好的 GEMM 库来为各个平台加速卷积计算。如下图所示：
 
-<img src="../img/Anatomy of High-Performance Matrix Multiplication/direct-conv-im2col.png" alt="img" style="zoom:80%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/direct-conv-im2col.png" style="zoom:80%;" />
 
 ​	这是一个3×3卷积，下面通过im2col，随着卷积过滤器在输入上滑动，将被计算的那部分输入展开成一行大小的向量。在滑动结束后，则会得到特征矩阵(K²C×HW)，将过滤器展开成N×K²C的矩阵，最后卷积的结果就可以表示为两个矩阵相乘的结果。
 
-<img src="../img/Anatomy of High-Performance Matrix Multiplication/matrix-im2col.png" alt="img" style="zoom:80%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/matrix-im2col.png" style="zoom:80%;" />
 
 ​	im2col 计算卷积使用 GEMM 的代价是额外的内存开销，因为不同的图像块之间往往存在一定的重叠，因此im2col会产生一定的内存重复。当卷积核尺寸是 1×1 时，由于不需要重排输入，GEMM 可以直接在原始输入上运行，并且不需要使用额外的内存。
 

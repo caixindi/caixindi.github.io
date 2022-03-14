@@ -1,8 +1,21 @@
+---
+title: Roofline and TPU Performance
+date: 2021-12-03
+categories:
+- CS217
+tags:
+- CS217 Lecture
+language: zh-CN
+toc: true
+---
+
 #### Roofline and TPU Performance
 
 ​		任何模型都必须依赖具体的计算平台才能展示出自己真正的实力。从前，许多的性能模型和模拟器都是通过追踪延迟来预测性能，近二十年也诞生了一些隐藏延迟的技术，例如：乱序执行（硬件发现并行性以隐藏延迟）；硬件流预取（硬件推测加载数据）；大规模线程并行。这些技术有效地隐藏了延迟，但同时也使得计算平台从延迟受限转变为了吞吐量受限。
 
 ​		Roofline模型是一个吞吐量指向的性能模型，它追踪速度而不是时间。也可以这么说说Roof-line Model就是：模型在一个计算平台的限制下，到底能达到多快的浮点计算速度。通俗来讲是”计算量为A且访存量为B的模型在算力为C且带宽为D的计算平台所能达到的理论性能上限E是多少“这个问题。Roofline模型有两个关键部分：一个是机器参数，第二个是应用的理论编辑。
+
+<!--more-->
 
 ​		首先介绍计算平台的两个指标：算力$\pi$和带宽$\beta$
 
@@ -28,7 +41,7 @@
 
 ​		Roofline模型在DRAM上如下图所示：
 
-<img src="../img/Roofline_and_TPU_Performance/Roofline-DRAM.png" alt="image-20210619012828505" style="zoom:80%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Roofline-DRAM.png" style="zoom:80%;" />
 
 - 机器算力决定“屋顶”的高度，峰值性能。
 
@@ -38,7 +51,7 @@
 
 - 绿色虚线和紫色实线包裹的三角形区域是应用是带宽受限的，如图所示，Kernel 1：
 
-  <img src="../img/Roofline_and_TPU_Performance/image-20211015185910102.png" alt="image-20211015185910102"  />
+  <img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015185910102.png"/>
 
   当模型的计算强度$I$小于计算平台的计算强度上限$I_{max}$时，此时模型位于“房檐”区间，模型理论性能$P$完全由计算平台的访存带宽上限$\beta$（即“房檐”的斜率）以及模型自身的计算强度$I$决定，模型处于memory-bound状态。可见，在模型处于带宽瓶颈区间的前提下，计算平台的带宽$\beta$越大（房檐越陡），或者模型的计算强度$I$越大，模型的理论性能$P$呈线性增长。
 
@@ -50,23 +63,23 @@
 
 示例1：
 
-![image-20211015185929351](../img/Roofline_and_TPU_Performance/image-20211015185929351.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015185929351.png)
 
 一般机器的计算强度在5-10flops/byte的范围。图中示例程序需要读x[i]和y[i]，写z[i]，每次循环需要2个浮点操作，需要24个字节内存访问，则AI（Arithmetic Intensity，计算强度）=2/24=0.083，故处于访存受限。
 
 示例2：
 
-![image-20211015185939543](../img/Roofline_and_TPU_Performance/image-20211015185939543.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015185939543.png)
 
 图中示例程序需要7次浮点操作，需要8次浮点访问（7次读，1次存），则AI=7/64=0.11，使用Cache可以将程序变为1次读1次写，故AI=7/16=0.44，故处于访存受限。
 
 ​		下图是不同产品Roofline模型的比较，图 1a 是具有两个内核的 Opteron X2的Roofline模型，将其与其后代产品Opteron X4进行比较，设定他们具有相同的内存系统，Opteron X4具有四个内核，并且X4的每个内核的峰值浮点性能也翻了一番，X4内核每个时钟周期可以发出两条浮点[SSE2指令](https://baike.baidu.com/item/SSE2%E6%8C%87%E4%BB%A4%E9%9B%86/1352365?fr=aladdin)，而X2内核可以每隔一个时钟周期发出两条SSE2指令，由于X4时钟频率稍快，X2为2.2GHz，而X4为2.3GHz，所以X4 的峰值浮点性能是X2的四倍多，具有相同的内存带宽。如图1b所示，脊点从Opteron X2的1.0向右移动到了Opteron X4的4.4。因此，要在X4中获得基于X2的性能提升，内核需要有高于1的计算强度或者或者工作集能匹配X4的2M大小的L3Cache。
 
-![image-20210619140334069](../img/Roofline_and_TPU_Performance/OpteronRoofline.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/OpteronRoofline.png)
 
 ​		由于处理器一般都包含了多级存储：寄存器、L1,L2,L3级cache、HBM或者MCDRAM（设备内存）、DDR和NVRAM。所以应用在每一个层级都有局部性，每一个层级都有独立的带宽，每一层级的数据搬移都有独立的计算强度。因此如下图所示，图中叠加了L2、MCDRAM和DDR的Roofline模型，**性能是受最小层约束的**。
 
-![image-20211015190029385](../img/Roofline_and_TPU_Performance/image-20211015190029385.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015190029385.png)
 
 ​		获得理论性能峰值的前提有如下几点：
 
@@ -90,19 +103,19 @@
 
 内核的操作强度决定了优化区域，从而决定了要尝试哪些优化，如下图所示：
 
-<img src="../img/Roofline_and_TPU_Performance/Roofline Model with Ceilings for Opteron X2.png" alt="image-20210619144911062" style="zoom: 50%;" />
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Roofline%20Model%20with%20Ceilings%20for%20Opteron%20X2.png" style="zoom: 50%;" />
 
 例如，内核2位于右侧的蓝色梯形中，这表明只需要进行计算优化。 如果内核落在左下角的黄色三角形中，模型会建议仅尝试内存优化。 内核1位于中间的绿色平行四边形，模型会建议尝试两种类型的优化。需要注意的是，内核1垂直线低于浮点不平衡优化，因此可以跳过优化2。
 
 ​		下面介绍TPU，TPU架构如下图所示，矩阵单元是最重要的计算部件，使用了256x256个8位的乘加单元，用脉动阵列实现。
 
-![image-20211015191102972](../img/Roofline_and_TPU_Performance/image-20211015191102972.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015191102972.png)
 
 ​		文中将不同神经网络模型在TPU,GPU,CPU中各自Roofline模型的位置作了描述，如下图所示。
 
-![image-20211015190142634](../img/Roofline_and_TPU_Performance/image-20211015190142634.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015190142634.png)
 
-![image-20211015190152521](../img/Roofline_and_TPU_Performance/image-20211015190152521.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015190152521.png)
 
 可以看到，大部分模型在TPU中基本都是访存受限，并且绝大部分都逼近理论峰值，而CPU和GPU大部分都是计算受限，并且都无法靠近理论峰值，可见，TPU比GPU和CPU更加适合神经网络。
 

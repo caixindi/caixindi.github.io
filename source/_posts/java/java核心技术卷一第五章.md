@@ -1,3 +1,14 @@
+---
+title: Java核心技术卷一-第五章
+date: 2021-12-03
+categories:
+- Java
+tags:
+- Java知识点
+language: zh-CN
+toc: true
+---
+
 #### [getClass()](https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/Object.html#getClass()) 
 
 返回运行时类的一个对象
@@ -21,6 +32,8 @@ public class ObjectDemo {
    }
 }
 ```
+
+<!--more-->
 
 执行结果：
 
@@ -131,7 +144,7 @@ add方法就是先比较ArrayList的实际大小和底层数组的长度，如�
     }
 ```
 
-![image-20211014160714666](D:/Typora-note/img/java%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E5%8D%B7%E4%B8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/image-20211014160714666.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211014160714666.png)
 
 但是如果在初始化的时候给了容量大小，那么会执行有参构造函数，如下，这个时候会生成一个大小为给定容量的数组，将其引用地址赋给elementData，这个时候调用add方法，在实际大小不超过底层数组大小的时候就不需要进行扩容。
 

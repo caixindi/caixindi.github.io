@@ -1,3 +1,14 @@
+---
+title: 本地docker镜像仓库部署
+date: 2021-12-03
+categories:
+- EdgeX
+tags:
+- EdgeX部署
+language: zh-CN
+toc: true
+---
+
 ## 1.运行本地注册表
 
 使用如下命令启动注册表容器：
@@ -7,6 +18,8 @@ $ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
 > **警告**:仅适用于测试的注册表配置。生产就绪的注册表必须受 TLS 保护，并且最好使用访问控制机制。继续阅读并继续阅读[配置指南](https://docs.docker.com/registry/configuration/)以部署生产就绪注册表。
+
+<!--more-->
 
 ## 2.从dockerhub上拉取镜像后标记并且推送到本地注册表
 

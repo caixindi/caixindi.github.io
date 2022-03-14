@@ -1,8 +1,23 @@
+---
+title: 树莓派系统部署k3s有关操作
+date: 2022-01-27
+categories:
+- EdgeX
+tags:
+- EdgeX部署
+language: zh-CN
+toc: true
+---
+
+## 开启Wifi模块
+
 ```shell
 #开启wifi模块
 rfkill unblock wifi
 sudo iwlist scan | grep ESSID
 ```
+
+<!--more-->
 
 ### 配置host
 

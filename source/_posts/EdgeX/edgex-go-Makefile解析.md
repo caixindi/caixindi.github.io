@@ -1,3 +1,20 @@
+---
+title: edgex Makefile 解析
+date: 2022-01-27
+categories:
+- EdgeX
+tags:
+- EdgeX构建
+language: zh-CN
+toc: true
+---
+
+### edgex Makefile 解析
+
+直接上代码！
+
+<!--more-->
+
 ```makefile
 #
 # Copyright (c) 2018 Cavium
