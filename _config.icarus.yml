@@ -7,7 +7,7 @@ logo: https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.sv
 # Page metadata configurations
 head:
     # URL or path to the website's icon
-    favicon: /img/favicon.svg
+    favicon: https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg
     # Web application manifests configuration
     # https://developer.mozilla.org/en-US/docs/Web/Manifest
     manifest:
@@ -245,7 +245,9 @@ widgets:
         type: links
         # Names and URLs of the sites
         links:
-            QiQi: 'https://qiqi-note.vercel.app/'
+            QiQi Page:
+                icon：https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/86K2BWNNSD%_T_TCNM%LBNY.jpg
+                url: 'https://qiqi-note.top'
     # Categories widget configurations
     -
         # Where should the widget be placed, left sidebar or right sidebar
