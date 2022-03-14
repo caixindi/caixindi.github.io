@@ -1,3 +1,16 @@
+---
+title: Atomic原子类总结
+date: 2022-03-12
+categories:
+- Java
+tags:
+- Java并发编程
+language: zh-CN
+toc: true
+---
+
+
+
 ### Atomic原子类
 
 `Atomic`是基于`unsafe`类和自旋操作实现的，要理解`Atomic`首先需要理解CAS。Atomic是指一个操作是不可中断的，即使在多个线程一起执行的时候，一个操作一旦开始，就不会被其他线程干扰。

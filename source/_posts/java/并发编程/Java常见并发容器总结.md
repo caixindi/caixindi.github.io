@@ -1,3 +1,14 @@
+---
+title: Java常见并发容器总结
+date: 2022-03-12
+categories:
+- Java
+tags:
+- Java并发编程
+language: zh-CN
+toc: true
+---
+
 ### Java常见并发容器总结
 
 JDK提供的并发容器大部分都在`java.util.concurrent(juc)`包
