@@ -245,9 +245,7 @@ widgets:
         type: links
         # Names and URLs of the sites
         links:
-            QiQi Page:
-                icon：https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/86K2BWNNSD%_T_TCNM%LBNY.jpg
-                url: 'https://qiqi-note.top'
+            QiQi: 'https://qiqi-note.top'
     # Categories widget configurations
     -
         # Where should the widget be placed, left sidebar or right sidebar
