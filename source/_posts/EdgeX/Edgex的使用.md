@@ -12,7 +12,7 @@ toc: true
 
 演示功能需要包含设备数据采集，数据分析，数据分析后的设备控制命令发送，以及云端的数据导出和远程数据访问显示。  设备目前可以使用edgeX 的虚拟设备。
 
-以虚拟设备为例：edgex自带的虚拟设备应该不会自己时刻产生数据，只有当edgex请求或者用户通过api请求其中的方法时，才会返回数据。在https://github.com/edgexfoundry/device-virtual-go/blob/main/cmd/res/devices/devices.toml文件中，对每个设备配置了**DeviceList/DeviceList.AutoEvents**，也就是自动事件，以此完成每个interval从虚拟设备收集数据发送到核心数据。
+以虚拟设备为例：edgex自带的虚拟设备应该不会自己时刻产生数据，只有当edgex请求或者用户通过api请求其中的方法时，才会返回数据。在[devices.toml](https://github.com/edgexfoundry/device-virtual-go/blob/main/cmd/res/devices/devices.toml)文件中，对每个设备配置了**DeviceList/DeviceList.AutoEvents**，也就是自动事件，以此完成每个interval从虚拟设备收集数据发送到核心数据。
 
 <!--more-->
 
