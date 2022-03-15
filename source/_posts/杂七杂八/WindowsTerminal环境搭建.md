@@ -1,6 +1,6 @@
 ---
 title: WindowsTerminal环境搭建
-date: 2021-12-03
+date: 2022-03-03
 categories:
 - 杂七杂八
 tags:
@@ -15,7 +15,7 @@ toc: true
 
 ### 2.安装新款 Powershell Core
 
-​	从https://github.com/PowerShell/PowerShell/releases选择release版本下载
+​	从[Powershell Core](https://github.com/PowerShell/PowerShell/releases)选择release版本下载
 
 ### 3.安装 Powershell 插件
 
