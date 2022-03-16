@@ -1,5 +1,6 @@
 ---
 title: K3s的安装
+date: 2021-09-03
 categories:
 - EdgeX
 tags:

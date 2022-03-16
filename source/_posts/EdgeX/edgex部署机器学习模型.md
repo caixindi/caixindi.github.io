@@ -1,5 +1,6 @@
 ---
 title: edgex部署机器学习模型
+date: 2021-09-27
 categories:
 - EdgeX
 tags:
