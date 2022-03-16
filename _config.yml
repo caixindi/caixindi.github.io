@@ -10,6 +10,12 @@ author: Cindy
 language: zh-CN
 timezone:
 
+# URL
+## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
+url: http://caixindi.github.io/
+permalink: :category/:post_title/
+permalink_defaults:
+
 # Directory
 source_dir: source
 public_dir: public
