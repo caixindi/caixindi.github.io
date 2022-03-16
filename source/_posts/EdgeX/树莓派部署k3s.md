@@ -1,6 +1,6 @@
 ---
 title: 树莓派系统部署k3s有关操作
-date: 2022-01-27
+date: 2021-10-27
 categories:
 - EdgeX
 tags:

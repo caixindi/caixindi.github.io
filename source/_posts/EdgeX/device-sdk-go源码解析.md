@@ -1,6 +1,6 @@
 ---
 title: device-sdk-go源码分析
-date: 2022-01-27
+date: 2021-12-27
 categories:
 - EdgeX
 tags:

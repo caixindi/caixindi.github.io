@@ -1,5 +1,6 @@
 ---
 title: k8s的学习
+date: 2021-08-21
 categories:
 - EdgeX
 tags:

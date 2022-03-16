@@ -1,6 +1,6 @@
 ---
 title: 树莓派EdgeX+TensorflowLite实现机器学习推理
-date: 2022-01-27
+date: 2021-12-27
 categories:
 - EdgeX
 tags:
