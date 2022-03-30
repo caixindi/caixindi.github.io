@@ -1,4 +1,4 @@
-```
+---
 title: kubeedge环境搭建
 date: 2022-03-30
 categories:
@@ -7,7 +7,7 @@ tags:
 - kubeedge
 language: zh-CN
 toc: true
-```
+---
 
 > 仅介绍使用keadm进行部署
 
