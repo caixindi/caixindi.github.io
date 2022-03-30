@@ -37,7 +37,7 @@ Keadm 用于安装 KubeEdge 的云和边缘组件。它不负责安装 K8s 和�
 > 云端和边端都需要安装
 
 ```
-# docker run --rm kubeedge/installation-package:v1.10.0 cat /usr/local/bin/keadm > /usr/local/bin/keadm && chmod +x /usr/local/bin/keadm
+docker run --rm kubeedge/installation-package:v1.10.0 cat /usr/local/bin/keadm > /usr/local/bin/keadm && chmod +x /usr/local/bin/keadm
 ```
 
 ## cloudcore安装
@@ -84,6 +84,8 @@ E0125 16:42:09.131414    1655 edged.go:291] initialize module error: system vali
 #解决问题
 #修改/boot/cmdline.txt
 sudo vim /boot/cmdline.txt
+#或者
+sudo vim /boot/firmware/btcmd.txt
 cgroup_enable=memory cgroup_memory=1
 #添加在同一行的最后面,接着内容后空格后添加, 注意:不要换行添加
 #重启机器配置生效
