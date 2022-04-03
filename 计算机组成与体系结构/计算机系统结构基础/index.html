@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>计算机系统结构基础 - Cindy</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="Cindy Page"><meta name="msapplication-TileImage" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Cindy Page"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="第2章 计算机系统结构基础​    计算机系统设计三个层次：    应用、操作系统、编译系统    计算机系统结构（性能、价格、功耗）   逻辑设计、电路设计、工艺制造"><meta property="og:type" content="blog"><meta property="og:title" content="计算机系统结构基础"><meta property="og:url" content="http://caixindi.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E5%9F%BA%E7%A1%80/"><meta property="og:site_name" content="Cindy"><meta property="og:description" content="第2章 计算机系统结构基础​    计算机系统设计三个层次：    应用、操作系统、编译系统    计算机系统结构（性能、价格、功耗）   逻辑设计、电路设计、工艺制造"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/IEEE754%E6%B5%AE%E7%82%B9%E6%95%B0%E6%A0%BC%E5%BC%8F%E5%8F%82%E6%95%B0.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/N%E6%B2%9F%E9%81%93MOS%E6%99%B6%E4%BD%93%E7%AE%A1%E7%A4%BA%E6%84%8F%E5%9B%BE.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/NMOS%E6%99%B6%E4%BD%93%E7%AE%A1%E5%B7%A5%E4%BD%9C%E7%8A%B6%E6%80%81.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/D%E9%94%81%E5%AD%98%E5%99%A8%E4%B8%8ED%E8%A7%A6%E5%8F%91%E5%99%A8.png"><meta property="article:published_time" content="2021-09-07T16:00:00.000Z"><meta property="article:author" content="Cindy"><meta property="article:tag" content="计算机组成与体系结构"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/IEEE754%E6%B5%AE%E7%82%B9%E6%95%B0%E6%A0%BC%E5%BC%8F%E5%8F%82%E6%95%B0.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://caixindi.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E5%9F%BA%E7%A1%80/"},"headline":"计算机系统结构基础","image":["https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/IEEE754%E6%B5%AE%E7%82%B9%E6%95%B0%E6%A0%BC%E5%BC%8F%E5%8F%82%E6%95%B0.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/N%E6%B2%9F%E9%81%93MOS%E6%99%B6%E4%BD%93%E7%AE%A1%E7%A4%BA%E6%84%8F%E5%9B%BE.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/NMOS%E6%99%B6%E4%BD%93%E7%AE%A1%E5%B7%A5%E4%BD%9C%E7%8A%B6%E6%80%81.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/D%E9%94%81%E5%AD%98%E5%99%A8%E4%B8%8ED%E8%A7%A6%E5%8F%91%E5%99%A8.png"],"datePublished":"2021-09-07T16:00:00.000Z","author":{"@type":"Person","name":"Cindy"},"publisher":{"@type":"Organization","name":"Cindy","logo":{"@type":"ImageObject","url":"https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg"}},"description":"第2章 计算机系统结构基础​    计算机系统设计三个层次：    应用、操作系统、编译系统    计算机系统结构（性能、价格、功耗）   逻辑设计、电路设计、工艺制造"}</script><link rel="canonical" href="http://caixindi.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E5%9F%BA%E7%A1%80/"><link rel="icon" href="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-09-07T16:00:00.000Z" title="9/8/2021, 12:00:00 AM">2021-09-08</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">计算机组成与体系结构</a></span><span class="level-item">16 分钟读完 (大约2435个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">计算机系统结构基础</h1><div class="content"><h3 id="第2章-计算机系统结构基础"><a href="#第2章-计算机系统结构基础" class="headerlink" title="第2章 计算机系统结构基础"></a>第2章 计算机系统结构基础</h3><p>​    计算机系统设计三个层次：</p>
+<table>
+<thead>
+<tr>
+<th align="left">应用、操作系统、编译系统</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>计算机系统结构（性能、价格、功耗）</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>逻辑设计、电路设计、工艺制造</strong></td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h4 id="摩尔定律和工艺的发展"><a href="#摩尔定律和工艺的发展" class="headerlink" title="摩尔定律和工艺的发展"></a>摩尔定律和工艺的发展</h4><p>​    之前，集成电路厂商大约每18月能把工艺提高一代，现在工艺的发展速度变慢了，变成了2~3年才更新一代。</p>
+<p>​    工艺技术与系统结构的关系经历了三个阶段：</p>
+<ul>
+<li><p>晶体管不够用</p>
+</li>
+<li><p>集成电路的集成度越来越高，晶体管更多、更快、更省电</p>
+</li>
+<li><p>晶体管越来越多，但越来越难用，晶体管复杂、不快、不省电</p>
+<p>复杂：纳米级工艺的物理效应，比如线间耦合、片内漂移、可制作性等问题。</p>
+<p>不快：晶体管的驱动能力越来越小，连线电容相对较大、连线延迟越来越长。</p>
+<p>不省电：（1）工艺不断更新换代，漏电功能不断增加（纳米级工艺晶体管即使关掉之后还有漏电，有直流电流）（2）电压不再随着工艺的更新换代而更新降低（3）纳米级工艺连线功耗占主导，降低晶体管功耗对总功耗影响不大</p>
+</li>
+</ul>
+<p>​    CMOS工艺的物理极限（面临原子和量子机制的边界）</p>
+<ul>
+<li>蚀刻问题越来越难处理（难以制造）</li>
+<li>片内漂移问题突出（同一硅片内不同位置的晶体管都有不一样的电参数）</li>
+<li>栅氧（晶体管中栅极下面作为绝缘层的氧化层）厚度难以继续降低</li>
+</ul>
+<p>​    如何解决？新材料与新器件P14</p>
+<h4 id="计算机应用的发展趋势"><a href="#计算机应用的发展趋势" class="headerlink" title="计算机应用的发展趋势"></a>计算机应用的发展趋势</h4><p>​    两台计算机。一台高端的，服务器更加普及，性能更高；一台融合了电脑、手机、电视等功能的手持普适信息终端。两者之间通过网络随时连接。（高和广两个特征）</p>
+<h4 id="计算机系统结构发展趋势"><a href="#计算机系统结构发展趋势" class="headerlink" title="计算机系统结构发展趋势"></a>计算机系统结构发展趋势</h4><ol>
+<li><p>复杂度障碍</p>
+<p>工艺提供的晶体管变多了，但是更“难用”了，导致了设计周期和设计成本大幅度增加。芯片设计越来越强调结构的层次化、功能部件的模块化和分布化。（每个功能部件都相对简单，部件内部尽可能保持通信的局部性）</p>
+</li>
+<li><p>主频障碍</p>
+<p>在高频状态下要求导线越细越短越好，这样才能减小导线分布电容等杂散干扰以保证CPU运算正确。因此制造工艺的限制，是主频发展的最大障碍之一。</p>
+</li>
+<li><p>功耗障碍</p>
+<p>由于晶体管的特性，今后处理器的工作电压不会随着工艺的进步而降低，加上频率的提高，导致了处理器的功耗密度随集成度的增加而增加。并且纳米级工艺的漏电功耗也在不断增加。</p>
+</li>
+<li><p>应用的变化</p>
+<p>设计专用处理器结合特定的算法设计，使芯片中多数面积和功耗都用来做运算以满足特定应用。</p>
+</li>
+</ol>
+<h4 id="多核结构的发展及其面临的问题"><a href="#多核结构的发展及其面临的问题" class="headerlink" title="多核结构的发展及其面临的问题"></a>多核结构的发展及其面临的问题</h4><p>​    一开始的多核芯片：把好几个硅片封装在一起成为一个大芯片。</p>
+<p>​    现在的多核芯片：采用比较复杂的少量核结构，其中的多核一般通过共享二级cache、三级cache或者内存进行互联和通信。</p>
+<p>​    未来多核结构如何发展：第一把核越做越大；第二采用大量的基于分片的众核结构（可重构RAW处理器）；第三把通用处理器和协处理器集成在一起形成异构多核结构。</p>
+<p>​    面临的问题：</p>
+<ol>
+<li><p>编程墙问题</p>
+<p>并行程序编程困难并且串行程序得不到加速，现在还没有一种结构方法可以在分布式结构和传统串行编程之间架设一座桥梁，以提高编程和调试的效率。</p>
+</li>
+<li><p>带宽墙问题</p>
+<p>通俗地讲，就是访存速度跟不上CPU处理数据的速度。</p>
+<p>一些新型工艺速度：3D封装技术、光互连技术。</p>
+</li>
+</ol>
+<h4 id="衡量计算机的指标"><a href="#衡量计算机的指标" class="headerlink" title="衡量计算机的指标"></a>衡量计算机的指标</h4><ol>
+<li><p>运行速度快不快</p>
+<p>影响计算机运算速度的因素主要有：算法和编译系统、体系结构、主频等。</p>
+<p><strong>算法和编译决定完成一个任务所需要的运算量；体系结构决定完成运算所需要的时钟周期数；主频决定每个时钟周期所需要的时间</strong>。</p>
+</li>
+<li><p>价格</p>
+</li>
+<li><p>功耗</p>
+</li>
+</ol>
+<h4 id="性能评价"><a href="#性能评价" class="headerlink" title="性能评价"></a>性能评价</h4><p>​    通过基准程序全面综合地评价计算机的性能。</p>
+<h3 id="第3章-二进制与逻辑电路"><a href="#第3章-二进制与逻辑电路" class="headerlink" title="第3章 二进制与逻辑电路"></a>第3章 二进制与逻辑电路</h3><h4 id="计算机中数的表示"><a href="#计算机中数的表示" class="headerlink" title="计算机中数的表示"></a>计算机中数的表示</h4><p>​    <strong>定点数表示</strong>：原码和补码，正数的原码和补码相同，负数的补码就是原码符号位不变，其余位取反后最低位加1。</p>
+<p>​    计算机中的定点数一般用补码来表示，其优点就是可以把减法变成加法，即A-B&#x3D;A+(B的负数)&#x3D;A+(B按位取反加1)。</p>
+<p>​    判断溢出的方法：两同号数相加，结果的符号位与参与运算的相反则溢出；两异号数相减，结果的符号位与被减数的符号位相反则溢出。</p>
+<p>​    <strong>浮点数表示</strong>：IEEE 754标准</p>
+<p><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/IEEE754%E6%B5%AE%E7%82%B9%E6%95%B0%E6%A0%BC%E5%BC%8F%E5%8F%82%E6%95%B0.png"></p>
+<p>​    以单精度为例，阶码值的范围为0~255之间，其中阶码位0和255时表示特殊的数，阶码在1~254之间表示正常的数。阶码为0时，表示非规格化数或者正负零，阶码为255时，表示无穷大或者非数。</p>
+<h4 id="MOS管工作原理"><a href="#MOS管工作原理" class="headerlink" title="MOS管工作原理"></a>MOS管工作原理</h4><p><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/N%E6%B2%9F%E9%81%93MOS%E6%99%B6%E4%BD%93%E7%AE%A1%E7%A4%BA%E6%84%8F%E5%9B%BE.png"></p>
+<p>​    以上图为例，如果直接在源极和漏极之间加上电压，则不会有电流通过。（源和漏之间有一对正反相对的PN结）如果先在栅极上加上电压，因为栅氧化层是绝缘层，于是在P衬底形成一个电场，栅极上的正电压会把P衬底的电子吸引到栅氧化层底部，形成一个很薄的沟道电子层，相当于在源极和漏极之间架设了一座桥梁，这个时候在源极和漏极之间加上电压就会有电流通过。P管与此相反，加上电不通。</p>
+<p><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/NMOS%E6%99%B6%E4%BD%93%E7%AE%A1%E5%B7%A5%E4%BD%9C%E7%8A%B6%E6%80%81.png"></p>
+<p>​    三种情况：截止区、线性区、饱和区</p>
+<h4 id="MOS基本工艺"><a href="#MOS基本工艺" class="headerlink" title="MOS基本工艺"></a>MOS基本工艺</h4><p>​    光刻、晶体管制作、版图设计</p>
+<h4 id="逻辑电路"><a href="#逻辑电路" class="headerlink" title="逻辑电路"></a>逻辑电路</h4><p>​    组合逻辑电路和时序逻辑电路</p>
+<p>​    下图是D锁存器和D触发器的原理图：<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/D%E9%94%81%E5%AD%98%E5%99%A8%E4%B8%8ED%E8%A7%A6%E5%8F%91%E5%99%A8.png"></p>
+<p>​    图(a)，在RS触发器前面加上两个与非门，用时钟C控制D输入。例如，C为0时，不管输入D如何变化，R和S都是1，于是最终输出都保持原来的状态。C为1时，R和S的值与D相同，相当于直通，这就是D锁存器的原理，时钟信号为高电平时输入，时钟信号为低电平时保持。</p>
+<p>​    图(b)，将两个D锁存器串接起来构成D触发器，C为1时，第一个锁存器直通，第二个锁存器保持；C为0时，第一个锁存器保持，第二个锁存器直通；C从1变到0的时刻把D的值锁存起来。</p>
+<p>​    当时钟信号为高时，主触发器就读取输入数据。同时，中间的反相器确保从触发器的时钟是低电平，以使得从触发器在主触发器的值改变的时候能够保证输出值稳定。（比如C&#x3D;1,D&#x3D;1，这个时候输入D传到主触发器Q&#x3D;1，但这个时候从触发器C&#x3D;0，因此输出不会因为D的改变而改变）在时钟信号变低之后，从触发器的时钟为高电平，数据值就直接传递（主触发器Q&#x3D;1传到了从触发器的输入D，并且从触发器时钟为高电平，因此从触发器Q&#x3D;1），但是这时候主触发器就给它一个稳定的输入（主触发器此时的输入D不管怎么改变，主触发器Q保持1）。当时钟信号从0变到1，从触发器会在主触发器的值改变之前保存数据。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>计算机系统结构基础</p><p><a href="http://caixindi.github.io/计算机组成与体系结构/计算机系统结构基础/">http://caixindi.github.io/计算机组成与体系结构/计算机系统结构基础/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Cindy</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-09-08</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">计算机组成与体系结构</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/EdgeX/edgex%E9%83%A8%E7%BD%B2%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">edgex部署机器学习模型</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/EdgeX/edgex%E7%9A%84%E4%BD%BF%E7%94%A8/"><span class="level-item">EdgeX的使用</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/20220313221114.png" alt="Cindy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Cindy</p><p class="is-size-6 is-block">Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Wuhan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">61</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">12</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">25</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/caixindi" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/caixindi"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#第2章-计算机系统结构基础"><span class="level-left"><span class="level-item">1</span><span class="level-item">第2章 计算机系统结构基础</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#摩尔定律和工艺的发展"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">摩尔定律和工艺的发展</span></span></a></li><li><a class="level is-mobile" href="#计算机应用的发展趋势"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">计算机应用的发展趋势</span></span></a></li><li><a class="level is-mobile" href="#计算机系统结构发展趋势"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">计算机系统结构发展趋势</span></span></a></li><li><a class="level is-mobile" href="#多核结构的发展及其面临的问题"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">多核结构的发展及其面临的问题</span></span></a></li><li><a class="level is-mobile" href="#衡量计算机的指标"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">衡量计算机的指标</span></span></a></li><li><a class="level is-mobile" href="#性能评价"><span class="level-left"><span class="level-item">1.6</span><span class="level-item">性能评价</span></span></a></li></ul></li><li><a class="level is-mobile" href="#第3章-二进制与逻辑电路"><span class="level-left"><span class="level-item">2</span><span class="level-item">第3章 二进制与逻辑电路</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#计算机中数的表示"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">计算机中数的表示</span></span></a></li><li><a class="level is-mobile" href="#MOS管工作原理"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">MOS管工作原理</span></span></a></li><li><a class="level is-mobile" href="#MOS基本工艺"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">MOS基本工艺</span></span></a></li><li><a class="level is-mobile" href="#逻辑电路"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">逻辑电路</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CS217/"><span class="level-start"><span class="level-item">CS217</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/EdgeX/"><span class="level-start"><span class="level-item">EdgeX</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/Git/"><span class="level-start"><span class="level-item">Git</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Golang/"><span class="level-start"><span class="level-item">Golang</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/kubeedge/"><span class="level-start"><span class="level-item">kubeedge</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">智能计算系统</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"><span class="level-start"><span class="level-item">杂七杂八</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A1%AC%E4%BB%B6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="level-start"><span class="level-item">硬件神经网络加速</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">神经网络与深度学习</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">计算机组成与体系结构</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS217-Lecture/"><span class="tag">CS217 Lecture</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E5%B9%B3%E5%8F%B0%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX平台构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E6%8E%A8%E7%90%86/"><span class="tag">EdgeX机器学习以及推理</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX构建</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%A6%82%E5%BF%B5/"><span class="tag">EdgeX概念</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E9%83%A8%E7%BD%B2/"><span class="tag">EdgeX部署</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Git%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><span class="tag">Git使用指南</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang%E5%9C%A3%E7%BB%8F/"><span class="tag">Golang圣经</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">Java并发编程</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Java知识点</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Linux知识点</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker%E9%83%A8%E7%BD%B2/"><span class="tag">docker部署</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge/"><span class="tag">kubeedge</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge-example/"><span class="tag">kubeedge example</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A5%BD%E7%9C%8B%E7%9A%84PowerShell/"><span class="tag">好看的PowerShell</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/"><span class="tag">快速傅里叶变换</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0/"><span class="tag">智能计算系统学习</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9A%97%E7%A1%85/"><span class="tag">暗硅</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E8%83%8C%E6%99%AF%E4%BB%A5%E5%8F%8A%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/"><span class="tag">硬件加速背景以及卷积神经网络优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="tag">神经网络与深度学习</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B2%97%E7%B2%92%E5%BA%A6%E5%8F%AF%E9%87%8D%E6%9E%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%8EPlasticine/"><span class="tag">粗粒度可重构体系结构与Plasticine</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="tag">计算机组成与体系结构</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="tag">轻量级神经网络加速</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E5%89%96%E6%9E%90/"><span class="tag">高性能矩阵乘法剖析</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a><p class="is-size-7"><span>&copy; 2022 Cindy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

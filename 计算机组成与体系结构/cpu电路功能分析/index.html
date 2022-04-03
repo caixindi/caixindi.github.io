@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>CPU电路功能分析 - Cindy</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="Cindy Page"><meta name="msapplication-TileImage" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Cindy Page"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="CPU电路功能分析一、CPU控制器的工作过程CPU控制器主要负责解析指令的操作码以及R型指令的功能码。 例如：R型指令格式如下:    OP rs rt rd shamt funct    6位（操作码） 5位 5位 5位 5位 6位（功能码）   CPU控制器会对R型指令高六位操作码部分以及低六位功能码部分进行解析。 相关问题：R型指令的第六位功能码会对最终输出的ALU_Control产生影响，"><meta property="og:type" content="blog"><meta property="og:title" content="CPU电路功能分析"><meta property="og:url" content="http://caixindi.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/cpu%E7%94%B5%E8%B7%AF%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90/"><meta property="og:site_name" content="Cindy"><meta property="og:description" content="CPU电路功能分析一、CPU控制器的工作过程CPU控制器主要负责解析指令的操作码以及R型指令的功能码。 例如：R型指令格式如下:    OP rs rt rd shamt funct    6位（操作码） 5位 5位 5位 5位 6位（功能码）   CPU控制器会对R型指令高六位操作码部分以及低六位功能码部分进行解析。 相关问题：R型指令的第六位功能码会对最终输出的ALU_Control产生影响，"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408222904.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408224319.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20210410142337248.png"><meta property="article:published_time" content="2021-08-31T16:00:00.000Z"><meta property="article:author" content="Cindy"><meta property="article:tag" content="计算机组成与体系结构"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408222904.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://caixindi.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/cpu%E7%94%B5%E8%B7%AF%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90/"},"headline":"CPU电路功能分析","image":["https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408222904.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408224319.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20210410142337248.png"],"datePublished":"2021-08-31T16:00:00.000Z","author":{"@type":"Person","name":"Cindy"},"publisher":{"@type":"Organization","name":"Cindy","logo":{"@type":"ImageObject","url":"https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg"}},"description":"CPU电路功能分析一、CPU控制器的工作过程CPU控制器主要负责解析指令的操作码以及R型指令的功能码。 例如：R型指令格式如下:    OP rs rt rd shamt funct    6位（操作码） 5位 5位 5位 5位 6位（功能码）   CPU控制器会对R型指令高六位操作码部分以及低六位功能码部分进行解析。 相关问题：R型指令的第六位功能码会对最终输出的ALU_Control产生影响，"}</script><link rel="canonical" href="http://caixindi.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/cpu%E7%94%B5%E8%B7%AF%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90/"><link rel="icon" href="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-08-31T16:00:00.000Z" title="9/1/2021, 12:00:00 AM">2021-09-01</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">计算机组成与体系结构</a></span><span class="level-item">10 分钟读完 (大约1567个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">CPU电路功能分析</h1><div class="content"><h3 id="CPU电路功能分析"><a href="#CPU电路功能分析" class="headerlink" title="CPU电路功能分析"></a>CPU电路功能分析</h3><h4 id="一、CPU控制器的工作过程"><a href="#一、CPU控制器的工作过程" class="headerlink" title="一、CPU控制器的工作过程"></a>一、CPU控制器的工作过程</h4><p>CPU控制器主要负责解析指令的操作码以及R型指令的功能码。</p>
+<p>例如：R型指令格式如下:</p>
+<table>
+<thead>
+<tr>
+<th align="center">OP</th>
+<th align="center">rs</th>
+<th align="center">rt</th>
+<th align="center">rd</th>
+<th align="center">shamt</th>
+<th align="center">funct</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">6位（操作码）</td>
+<td align="center">5位</td>
+<td align="center">5位</td>
+<td align="center">5位</td>
+<td align="center">5位</td>
+<td align="center">6位（功能码）</td>
+</tr>
+</tbody></table>
+<p>CPU控制器会对R型指令高六位操作码部分以及低六位功能码部分进行解析。</p>
+<p><font color="red">相关问题：R型指令的第六位功能码会对最终输出的ALU_Control产生影响，为什么其他类型的指令不会？</font></p>
+<p>答：其他类型指令的操作码不同，会从电路上进行设计，从而屏蔽其他指令低六位对最终ALU_Control的影响。</p>
+<span id="more"></span>
+
+<h4 id="二、CPU数据通路电路分析"><a href="#二、CPU数据通路电路分析" class="headerlink" title="二、CPU数据通路电路分析"></a>二、CPU数据通路电路分析</h4><h5 id="1-分线器分离字段"><a href="#1-分线器分离字段" class="headerlink" title="1.分线器分离字段"></a>1.分线器分离字段</h5><p>根据指令格式通过分线器将低26位的字段分成不同的部分，分别传向不同的端口。</p>
+<p>详细地，就像是将低26位inst_field(25:0)分离为inst_field(25:21)、inst_field(2016)、inst_field(15:11)、inst_field(15:0)这四个不同的字段。</p>
+<h5 id="2-多路选择器"><a href="#2-多路选择器" class="headerlink" title="2.多路选择器"></a>2.多路选择器</h5><p>多路选择器的功能就是对于多个输入信号，通过控制信号从而选择指定的输入信号进行输出。</p>
+<h5 id="3-寄存器堆"><a href="#3-寄存器堆" class="headerlink" title="3.寄存器堆"></a>3.寄存器堆</h5><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408222904.png" style="zoom: 80%;" />
+
+<p>L_S为控制信号线，当且仅当L_S&#x3D;1时，才能进行寄存器写操作。</p>
+<p>clk为时钟信号，rst为复位reset信号（rst&#x3D;1时，对寄存器堆中所有寄存器进行复位，复位至数值0）。</p>
+<p>R_addr_A(4:0)、R_addr_B(4:0)为读地址线，Wt_addr(4:0)为写地址线，都为5位是因为寄存器堆总共有32个寄存器，所以寄存器的地址线位数为：log2 32 &#x3D; 5位。</p>
+<p>rdata_A(31:0)、rdata_B(31:0)为输出数据线，Wt_data(31:0)为写入数据线，都为32位是因为每个寄存器的位数为32位。</p>
+<h5 id="4-高位扩展器"><a href="#4-高位扩展器" class="headerlink" title="4.高位扩展器"></a>4.高位扩展器</h5><p>用于将16位的立即数扩展为32位，扩展的方法是将低16位的最高一位复制为16位，并将其作为高16位的值，形成一个32位数。</p>
+<h5 id="5-ALU运算单元"><a href="#5-ALU运算单元" class="headerlink" title="5.ALU运算单元"></a>5.ALU运算单元</h5><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/QQ%E6%88%AA%E5%9B%BE20210408224319.png" style="zoom:80%;" />
+
+<p>操作数输入端口：A(31:0)和B(31:0)，这两个端口输入需要执行运算的操作数。</p>
+<p>运算器控制信号端口：ALU_operation(2:0),不同的值代表不同的运算，这里ALU_operation(2:0)为三位，故可以执行8种不同的运算。具体如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">ALU_operation(2:0)</th>
+<th align="center">运算操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">000</td>
+<td align="center">AND 与</td>
+</tr>
+<tr>
+<td align="center">001</td>
+<td align="center">OR 或</td>
+</tr>
+<tr>
+<td align="center">010</td>
+<td align="center">ADD 加</td>
+</tr>
+<tr>
+<td align="center">011</td>
+<td align="center">XOR 异或</td>
+</tr>
+<tr>
+<td align="center">100</td>
+<td align="center">NOR 或非</td>
+</tr>
+<tr>
+<td align="center">101</td>
+<td align="center">SRL 移位</td>
+</tr>
+<tr>
+<td align="center">110</td>
+<td align="center">SUB 减</td>
+</tr>
+<tr>
+<td align="center">111</td>
+<td align="center">全0</td>
+</tr>
+</tbody></table>
+<p><font color='blue'>这里的ALU_operation(2:0)源于ALU_Control(2:0)信号，而ALU_Control(2:0)信号是由CPU控制器解析指令的高6位操作码和低6位功能码生成的。</font></p>
+<p>运算结果输出端口：res(31:0),输出32位的运算结果。</p>
+<p>运算结果标记位端口：zero、overflow。当运算结果为0时，zero状态位置为1，当结果溢出时，overflow置为1。</p>
+<h5 id="6-PC程序计数器指针"><a href="#6-PC程序计数器指针" class="headerlink" title="6.PC程序计数器指针"></a>6.PC程序计数器指针</h5><p>PC程序计数器是用于存放下一条指令所在单元的地址的地方。</p>
+<p>（1）PC计数器复位</p>
+<p>当rst&#x3D;1时，对PC计数器进行复位，此时PC计数器输出Q(31:0)为0。</p>
+<p>（2）PC计数器赋值</p>
+<p>当条件满足rst=&#x3D;0,CE&#x3D;&#x3D;1,并且clk时钟信号到来，将输入端D(31:0)的值写入到PC寄存器中，并且从Q(31:0)输出。</p>
+<p><font color='red'>注意：PC计数器的值从Q(31:0)端口输出后，会将值传送至PC_out(31:0)端口，PC_out(31:0)输出后，将会传至指令存储器的地址输入端口，从而从ROM中读取相应的指令。</font></p>
+<h5 id="7-转移指令对PC指针的更新"><a href="#7-转移指令对PC指针的更新" class="headerlink" title="7.转移指令对PC指针的更新"></a>7.转移指令对PC指针的更新</h5><p>非转移指令：PC&#x3D;PC+4</p>
+<p>转移指令：</p>
+<p>(1)相对偏移跳转：branch</p>
+<p>例如此时branch指令的地址为0x30 对于指令branch 0x10</p>
+<p>最终会跳转到：0x44（PC&#x3D;PC+4+offset）</p>
+<hr>
+<p>beq:branch if equal</p>
+<p>beq rs,rt,offset</p>
+<p>例如：beq r17,r18,0x202→000100 10001 10010 0000 0010 0000 0010</p>
+<p>inst_field(25:0)&#x3D;10001 10010 0000 0010 0000 0010</p>
+<p>BEQ指令的操作码为000100，经CPU控制器解析后，设置Branch&#x3D;1,Jump&#x3D;0,ALU_Control(2:0)&#x3D;110(减法操作)</p>
+<p>R_addr_A&#x3D;10001,rdata_A&#x3D;R[17]</p>
+<p>R_addr_B&#x3D;10010,rdata_B&#x3D;R[18]</p>
+<p>ALU:操作数A&#x3D;R[17],操作数B&#x3D;R[18]</p>
+<p>res&#x3D;A-B&#x3D;R[17]-R[18],如果R[17]&#x3D;&#x3D;R[18]，res&#x3D;zero,置zero&#x3D;1，使得多路选择器MUXD4&#x3D;1,最终<font color='red'>PC&#x3D;branch_pc&#x3D;PC+4+Branch_offset</font>,实现了偏移跳转。</p>
+<p>(2)直接跳转:jump,call</p>
+<p>例如jump 0x20 会跳转至0x20（PC&#x3D;target）</p>
+<p>jump指令的操作码为000010，经CPU控制器解析，置信号Jump&#x3D;1,Branch&#x3D;0,当jump&#x3D;1时，Jump_addr直接传至PC</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20210410142337248.png" style="zoom: 67%;" />
+
+
+
+<h4 id="三-总结"><a href="#三-总结" class="headerlink" title="三.总结"></a>三.总结</h4><p>以下以一条C语言语句举例说明指令在CPU中的执行过程。</p>
+<p>1.C语言语句：a&#x3D;b+c;</p>
+<p>2.汇编层次：</p>
+<p>编译器将C语言编译器成汇编：</p>
+<p>(1) lds r18,0x300    将变量b的值存入r18</p>
+<p>(2) lds r19,0x304    将变量c的值存入r19</p>
+<p>(3)add r17,r18,r19  将b和c的值相加存入r17</p>
+<p>3.机器码层次：</p>
+<p>以下只分析指令add r17,r18,r19 →000000 10010 10011 10001 00000 100000</p>
+<p>4.机器码存入ROM指令存储器中，假设这条add指令存放在ROM中地址0x56处</p>
+<p>5.计算机执行过程中，当PC&#x3D;0x56时，取出这条add指令，传入CPU的inst_in(31:0)端口</p>
+<p>6.此时inst_in(31:0)&#x3D;000000 10010 10011 10001 00000 100000</p>
+<p>7.经过分线器，使得OPcode(5:0)&#x3D;000000 Fun(5:0)&#x3D;100000</p>
+<p>操作码经过CPU控制器解析后：(1)生成控制信号：Branch&#x3D;0、RegWrite&#x3D;1、RegDst&#x3D;1、MemtoReg&#x3D;0、ALUSrc_B&#x3D;0、mem_w&#x3D;0、Jump&#x3D;0</p>
+<p>(2)生成ALUop0和ALUop1信号，传送至下面的电路和Fun(5:0)功能码一起解析，最终生成ALU_Control(2:0)</p>
+<p>8.控制信号传入Data_path，从而对add指令的低26位操作数进行解析</p>
+<p>9.inst_field(25:0)&#x3D;10010 10011 10001 00000 100000，通过三个分线器，得到R_addr_A&#x3D;10010(使得rdata_A&#x3D;r18&#x3D;b),R_addr_B&#x3D;10011(使得rdata_B&#x3D;r19&#x3D;c)</p>
+<p>10.ALU(算术逻辑运算单元)</p>
+<p>操作数A&#x3D;b，操作数B&#x3D;rdata_B&#x3D;c，由于ALU_operation(2:0)&#x3D;010，所以ALU对操作数A和B做加法运算，故res&#x3D;b+c</p>
+<p>11.由于MemtoReg&#x3D;0，故Wt_data&#x3D;res&#x3D;b+c，又RegDst&#x3D;1故Wt_addr(4:0)&#x3D;10001&#x3D;17，则会将b+c→r17,r17中的值就是b+c的值，即运算结果</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>CPU电路功能分析</p><p><a href="http://caixindi.github.io/计算机组成与体系结构/cpu电路功能分析/">http://caixindi.github.io/计算机组成与体系结构/cpu电路功能分析/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Cindy</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-09-01</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">计算机组成与体系结构</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E3%80%8A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E3%80%8B%E5%BE%AA%E7%8E%AF%E9%9A%8F%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%83%A8%E5%88%86/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">《神经网络与深度学习》循环随机网络部分</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E3%80%8A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E3%80%8B%E7%AC%AC8%E7%AB%A0/"><span class="level-item">《神经网络与深度学习》第8章</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/20220313221114.png" alt="Cindy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Cindy</p><p class="is-size-6 is-block">Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Wuhan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">61</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">12</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">25</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/caixindi" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/caixindi"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#CPU电路功能分析"><span class="level-left"><span class="level-item">1</span><span class="level-item">CPU电路功能分析</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#一、CPU控制器的工作过程"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">一、CPU控制器的工作过程</span></span></a></li><li><a class="level is-mobile" href="#二、CPU数据通路电路分析"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">二、CPU数据通路电路分析</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-分线器分离字段"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">1.分线器分离字段</span></span></a></li><li><a class="level is-mobile" href="#2-多路选择器"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">2.多路选择器</span></span></a></li><li><a class="level is-mobile" href="#3-寄存器堆"><span class="level-left"><span class="level-item">1.2.3</span><span class="level-item">3.寄存器堆</span></span></a></li><li><a class="level is-mobile" href="#4-高位扩展器"><span class="level-left"><span class="level-item">1.2.4</span><span class="level-item">4.高位扩展器</span></span></a></li><li><a class="level is-mobile" href="#5-ALU运算单元"><span class="level-left"><span class="level-item">1.2.5</span><span class="level-item">5.ALU运算单元</span></span></a></li><li><a class="level is-mobile" href="#6-PC程序计数器指针"><span class="level-left"><span class="level-item">1.2.6</span><span class="level-item">6.PC程序计数器指针</span></span></a></li><li><a class="level is-mobile" href="#7-转移指令对PC指针的更新"><span class="level-left"><span class="level-item">1.2.7</span><span class="level-item">7.转移指令对PC指针的更新</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三-总结"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">三.总结</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CS217/"><span class="level-start"><span class="level-item">CS217</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/EdgeX/"><span class="level-start"><span class="level-item">EdgeX</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/Git/"><span class="level-start"><span class="level-item">Git</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Golang/"><span class="level-start"><span class="level-item">Golang</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/kubeedge/"><span class="level-start"><span class="level-item">kubeedge</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">智能计算系统</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"><span class="level-start"><span class="level-item">杂七杂八</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A1%AC%E4%BB%B6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="level-start"><span class="level-item">硬件神经网络加速</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">神经网络与深度学习</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">计算机组成与体系结构</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS217-Lecture/"><span class="tag">CS217 Lecture</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E5%B9%B3%E5%8F%B0%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX平台构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E6%8E%A8%E7%90%86/"><span class="tag">EdgeX机器学习以及推理</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX构建</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%A6%82%E5%BF%B5/"><span class="tag">EdgeX概念</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E9%83%A8%E7%BD%B2/"><span class="tag">EdgeX部署</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Git%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><span class="tag">Git使用指南</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang%E5%9C%A3%E7%BB%8F/"><span class="tag">Golang圣经</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">Java并发编程</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Java知识点</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Linux知识点</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker%E9%83%A8%E7%BD%B2/"><span class="tag">docker部署</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge/"><span class="tag">kubeedge</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge-example/"><span class="tag">kubeedge example</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A5%BD%E7%9C%8B%E7%9A%84PowerShell/"><span class="tag">好看的PowerShell</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/"><span class="tag">快速傅里叶变换</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0/"><span class="tag">智能计算系统学习</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9A%97%E7%A1%85/"><span class="tag">暗硅</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E8%83%8C%E6%99%AF%E4%BB%A5%E5%8F%8A%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/"><span class="tag">硬件加速背景以及卷积神经网络优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="tag">神经网络与深度学习</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B2%97%E7%B2%92%E5%BA%A6%E5%8F%AF%E9%87%8D%E6%9E%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%8EPlasticine/"><span class="tag">粗粒度可重构体系结构与Plasticine</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="tag">计算机组成与体系结构</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="tag">轻量级神经网络加速</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E5%89%96%E6%9E%90/"><span class="tag">高性能矩阵乘法剖析</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a><p class="is-size-7"><span>&copy; 2022 Cindy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

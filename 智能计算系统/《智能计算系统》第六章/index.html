@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>《智能计算系统》第六章 - Cindy</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="Cindy Page"><meta name="msapplication-TileImage" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Cindy Page"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="第六章 深度学习处理器原理6.1 深度学习处理器概述6.1.1 深度学习处理器的意义​        随着神经网络算法的发展，神经网络从只有输入和输出层的感知机，发展到有一个隐层的多层感知机，再到深度神经网络。在这个过程中，伴随着神经网络的层数、神经元数量、突触数量的不断增长，传统芯片CPU、GPU已经难以满足神经网络不断增长的速度和能效需求。由此诞生了深度学习处理器。"><meta property="og:type" content="blog"><meta property="og:title" content="《智能计算系统》第六章"><meta property="og:url" content="http://caixindi.github.io/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/%E3%80%8A%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E3%80%8B%E7%AC%AC%E5%85%AD%E7%AB%A0/"><meta property="og:site_name" content="Cindy"><meta property="og:description" content="第六章 深度学习处理器原理6.1 深度学习处理器概述6.1.1 深度学习处理器的意义​        随着神经网络算法的发展，神经网络从只有输入和输出层的感知机，发展到有一个隐层的多层感知机，再到深度神经网络。在这个过程中，伴随着神经网络的层数、神经元数量、突触数量的不断增长，传统芯片CPU、GPU已经难以满足神经网络不断增长的速度和能效需求。由此诞生了深度学习处理器。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.1-DLP%E6%8C%87%E4%BB%A4%E9%9B%86.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.4.1-%E5%9F%BA%E4%BA%8E%E6%A0%87%E9%87%8FMAC%E7%9A%84%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6-163428767617923.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.4.1-%E5%9F%BA%E4%BA%8E%E6%A0%87%E9%87%8FMAC%E7%9A%84%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6-163428767617923.png"><meta property="article:published_time" content="2021-12-02T16:00:00.000Z"><meta property="article:author" content="Cindy"><meta property="article:tag" content="智能计算系统学习"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.1-DLP%E6%8C%87%E4%BB%A4%E9%9B%86.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://caixindi.github.io/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/%E3%80%8A%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E3%80%8B%E7%AC%AC%E5%85%AD%E7%AB%A0/"},"headline":"《智能计算系统》第六章","image":["https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.1-DLP%E6%8C%87%E4%BB%A4%E9%9B%86.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.4.1-%E5%9F%BA%E4%BA%8E%E6%A0%87%E9%87%8FMAC%E7%9A%84%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6-163428767617923.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.4.1-%E5%9F%BA%E4%BA%8E%E6%A0%87%E9%87%8FMAC%E7%9A%84%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6-163428767617923.png"],"datePublished":"2021-12-02T16:00:00.000Z","author":{"@type":"Person","name":"Cindy"},"publisher":{"@type":"Organization","name":"Cindy","logo":{"@type":"ImageObject","url":"https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg"}},"description":"第六章 深度学习处理器原理6.1 深度学习处理器概述6.1.1 深度学习处理器的意义​        随着神经网络算法的发展，神经网络从只有输入和输出层的感知机，发展到有一个隐层的多层感知机，再到深度神经网络。在这个过程中，伴随着神经网络的层数、神经元数量、突触数量的不断增长，传统芯片CPU、GPU已经难以满足神经网络不断增长的速度和能效需求。由此诞生了深度学习处理器。"}</script><link rel="canonical" href="http://caixindi.github.io/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/%E3%80%8A%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E3%80%8B%E7%AC%AC%E5%85%AD%E7%AB%A0/"><link rel="icon" href="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-12-02T16:00:00.000Z" title="12/3/2021, 12:00:00 AM">2021-12-03</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/">智能计算系统</a></span><span class="level-item">19 分钟读完 (大约2918个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">《智能计算系统》第六章</h1><div class="content"><h3 id="第六章-深度学习处理器原理"><a href="#第六章-深度学习处理器原理" class="headerlink" title="第六章 深度学习处理器原理"></a>第六章 深度学习处理器原理</h3><h4 id="6-1-深度学习处理器概述"><a href="#6-1-深度学习处理器概述" class="headerlink" title="6.1 深度学习处理器概述"></a>6.1 深度学习处理器概述</h4><h5 id="6-1-1-深度学习处理器的意义"><a href="#6-1-1-深度学习处理器的意义" class="headerlink" title="6.1.1 深度学习处理器的意义"></a>6.1.1 深度学习处理器的意义</h5><p>​        随着神经网络算法的发展，神经网络从只有输入和输出层的感知机，发展到有一个隐层的多层感知机，再到深度神经网络。在这个过程中，伴随着神经网络的层数、神经元数量、突触数量的不断增长，传统芯片CPU、GPU已经难以满足神经网络不断增长的速度和能效需求。由此诞生了深度学习处理器。</p>
+<span id="more"></span>
+
+<h5 id="6-1-2-深度学习处理器的发展历史"><a href="#6-1-2-深度学习处理器的发展历史" class="headerlink" title="6.1.2 深度学习处理器的发展历史"></a>6.1.2 深度学习处理器的发展历史</h5><p>​        早期的神经网络计算机&#x2F;芯片只能处理很小规模的浅层神经网络算法，未能取得工业实践中的广泛应用。随着深度学习技术的兴起，推动了人工智能芯片的研究和发展。</p>
+<p>​        深度学习处理器的蓬勃发展主要得益于以下三个方面：</p>
+<p>​        （1）深度学习应用广泛</p>
+<p>​        （2）集成电路工艺发展放缓</p>
+<p>​        （3）计算机体系结构技术的发展</p>
+<h5 id="6-1-3-设计思路"><a href="#6-1-3-设计思路" class="headerlink" title="6.1.3 设计思路"></a>6.1.3 设计思路</h5><p>​        整个体系结构最重要的问题：算法范围界定和算法分析。深度学习处理器需要在通用性和灵活性之间取得平衡，既要能效高，又要能对深度学习应用有全面的支持。深度学习处理器需要具备可编程的能力，通过编程来支持深度学习编程框架中已有的深度学习算子，甚至是未来的算子。</p>
+<p>​        因此，设计深度学习处理器时，首先要分析算法的计算特性和访存特性，然后根据算法特性，确定深度学习处理器的微体系结构，包括指令集、流水线、运算部件、访存部件。</p>
+<h4 id="6-2-目标算法分析"><a href="#6-2-目标算法分析" class="headerlink" title="6.2 目标算法分析"></a>6.2 目标算法分析</h4><p>​        以本书驱动范例，针对VGG19进行分析。</p>
+<h5 id="6-2-1-计算特征"><a href="#6-2-1-计算特征" class="headerlink" title="6.2.1 计算特征"></a>6.2.1 计算特征</h5><p>​        不同层的计算特点如表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">层</th>
+<th align="center">计算类型</th>
+<th align="center">乘加操作个数</th>
+<th align="center">激活函数操作个数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">卷积层</td>
+<td align="center">矩阵内积、向量的元素操作</td>
+<td align="center">$N_{if}\times N_{of}\times N_{or}\times N_{oc}\times K_{r}\times K_{c}$个乘加</td>
+<td align="center">$N_{of}\times N_{or}\times N_{oc}$</td>
+</tr>
+<tr>
+<td align="center">池化层</td>
+<td align="center">向量的元素操作</td>
+<td align="center">$N_{if}\times N_{or}\times N_{oc}\times K_{r}\times K_{c}$个加法或比较$+N_{if}\times N_{or}\times N_{oc}$个除法操作（平均池化）</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">全连接层</td>
+<td align="center">矩阵乘向量，向量的元素操作</td>
+<td align="center">$N_{o}\times N_{i}$个乘加</td>
+<td align="center">$N_{o}$</td>
+</tr>
+</tbody></table>
+<h5 id="6-2-2-访存特征"><a href="#6-2-2-访存特征" class="headerlink" title="6.2.2 访存特征"></a>6.2.2 访存特征</h5><p>​        不同层的重用特点如表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">层</th>
+<th align="center">可重用</th>
+<th align="center">不可重用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">卷积层</td>
+<td align="center">输入神经元、输出神经元、突触权重</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">池化层</td>
+<td align="center">当池化窗口大于步长时，部分输入神经元可重用</td>
+<td align="center">当池化窗口小于等于步长时，输入神经元、输出神经元都不可重用</td>
+</tr>
+<tr>
+<td align="center">全连接层</td>
+<td align="center">输入神经元、输出神经元</td>
+<td align="center">突触权重</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-深度学习处理器DLP结构"><a href="#6-3-深度学习处理器DLP结构" class="headerlink" title="6.3 深度学习处理器DLP结构"></a>6.3 深度学习处理器DLP结构</h4><h5 id="6-3-1-指令集"><a href="#6-3-1-指令集" class="headerlink" title="6.3.1 指令集"></a>6.3.1 指令集</h5><p>​        硬连线方案为每个神经网络提供专门的硬件控制逻辑，这种方案对特定神经网络能效极高，但无法支持新的神经网络，通用性差。</p>
+<p>​        指令集方案是把各种神经网络层或算子拆分成一些基本的操作，每个操作由一条指令来完成。只要指令集覆盖了各种深度学习算子的最大公约数，新的神经网络层就能够由这些指令拼接组合起来，因此指令集方案兼顾了能效和通用性。</p>
+<p>​        在提升并行性方面，采用数据级并行，数据级并行是指一条指令可以同时处理多个数据。数据级并行的优点在于指令数较少，因而指令流水线功耗、面积开销小。虽然指令级并行的灵活性高，但其指令流水线控制通路复杂，功耗和面积开销都很大，由于深度学习中主要是规整的向量、矩阵操作，并且迫切需要提升效率，降低功耗和面积开销，所以采用数据级并行的指令集。</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.1-DLP%E6%8C%87%E4%BB%A4%E9%9B%86.png"  style="zoom:80%;" />
+
+<h5 id="6-3-2-流水线"><a href="#6-3-2-流水线" class="headerlink" title="6.3.2 流水线"></a>6.3.2 流水线</h5><p>​        DLP的一条指令执行主要经历7个流水线阶段：取指、译码、发射、读寄存器、执行、写回、提交。DLP深度学习处理器架构如图所示：</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png" style="zoom:80%;" />
+
+<p>其中，VFU为向量功能单元，MFU为矩阵功能单元。</p>
+<h5 id="6-3-3-运算部件"><a href="#6-3-3-运算部件" class="headerlink" title="6.3.3 运算部件"></a>6.3.3 运算部件</h5><h6 id="6-3-3-1-向量MAC"><a href="#6-3-3-1-向量MAC" class="headerlink" title="6.3.3.1 向量MAC"></a>6.3.3.1 向量MAC</h6><p>​        下图是一个最基本的标量MAC单元，功能是完成一个乘加操作，它的输入是两个标量a和b，它的输出为两个标量的乘积加上原始值c，即$a\times b+c$。</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png" style="zoom:80%;" />
+
+<p>​        而向量MAC的输入则是两个向量$a&#x3D;[a_1;a_2;a_3;\cdots;a_N]$和$b&#x3D;[b_1;b_2;b_3;\cdots;b_N]$，输出为两个向量的内积再加上原始值c，即<br>$$<br>\sum_{i&#x3D;1}^Na_i\times b_i+c<br>$$<br>​        输入为两个N维向量的MAC，每个时钟周期可以完成一个N输入1输出的神经网络全连接层的计算。如果DLP集成了M个向量MAC，那么每个时钟周期就可以处理完成一个N输入M输出的神经网络全连接层的计算。</p>
+<h6 id="6-3-3-2-对向量MAC单元的扩展"><a href="#6-3-3-2-对向量MAC单元的扩展" class="headerlink" title="6.3.3.2 对向量MAC单元的扩展"></a>6.3.3.2 对向量MAC单元的扩展</h6><p>​        对向量MAC单元作如下改进，以支持VGG19网络中前向计算的所有算子。</p>
+<p>​        （1）增加可重构的非线性激活函数的运算部件。</p>
+<p>​        （2）增加局部累加器，支持加偏置的运算。</p>
+<p>​        （3）增加MFU-1&#x2F;MFU-2&#x2F;MFU-3的退出通路以支持池化运算。</p>
+<p>​        <img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.3.2-DLP%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%84%E7%90%86%E5%99%A8%E6%9E%B6%E6%9E%84-163428766604322.png" style="zoom:80%;" /></p>
+<h6 id="6-3-3-3-MFU和VFU"><a href="#6-3-3-3-MFU和VFU" class="headerlink" title="6.3.3.3 MFU和VFU"></a>6.3.3.3 MFU和VFU</h6><p>​        MFU和VFU分别用于支持矩阵指令和向量指令，因此MFU支持矩阵向量乘指令MMV、向量矩阵乘指令VMM、矩阵标量乘指令NMS、外积乘指令OP、矩阵加矩阵指令MAM和矩阵减矩阵指令MSM。而VFU则需要支持神经网络算法中单纯的一维向量操作指令，而无需实现在MFU上，降低MFU的复杂度，提高向量操作的灵活性。</p>
+<h5 id="6-3-4-访存部件"><a href="#6-3-4-访存部件" class="headerlink" title="6.3.4 访存部件"></a>6.3.4 访存部件</h5><p>​        深度学习处理器采用Scratchpad Memory管理方案，将输入神经元、输出神经元、突出权重这三类数据放在不同的片上存储器上（可解耦性），形成“运算单元-片上-片外“的存储架构，提高片上数据复用率。分别为NRAM-in（输入神经元缓存）、NRAM-out（输出神经元缓存）和WRAM（权重缓存）。</p>
+<h5 id="6-3-5-算法到芯片的映射"><a href="#6-3-5-算法到芯片的映射" class="headerlink" title="6.3.5 算法到芯片的映射"></a>6.3.5 算法到芯片的映射</h5><p>​        由于输入神经元&#x2F;输出数据元的个数数量级非常高，现阶段没有任何单个芯片足以放下100万个乘法器，因此在计算过程中硬件运算必须时分复用。在每个计算周期只用一小块的输入数据去计算一小块的输出数据，下一计算周期计算下一小块的输出数据，最后汇总得到最终的输出数据。</p>
+<h4 id="6-4-优化设计"><a href="#6-4-优化设计" class="headerlink" title="6.4 优化设计"></a>6.4 优化设计</h4><h5 id="6-4-1-基于标量MAC的运算部件"><a href="#6-4-1-基于标量MAC的运算部件" class="headerlink" title="6.4.1 基于标量MAC的运算部件"></a>6.4.1 基于标量MAC的运算部件</h5><p>​        由于卷积运算中存在多种数据可复用性，在设计标量MAC的运算单元时可以有效地利用这些特性，其一种实现如图所示：</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.4.1-%E5%9F%BA%E4%BA%8E%E6%A0%87%E9%87%8FMAC%E7%9A%84%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6-163428767617923.png" style="zoom:80%;" />
+
+<p>通过PE间的数据传递来获得所需要的数据，可以有效地减少片外访存带宽，缓解访存压力。</p>
+<h5 id="6-4-2-稀疏化"><a href="#6-4-2-稀疏化" class="headerlink" title="6.4.2 稀疏化"></a>6.4.2 稀疏化</h5><p>​        采用稀疏化的方法，可以大幅降低神经网络的计算量和数据量。我们可以对权重稀疏化，也可以对神经元稀疏化，也可以动态稀疏化。利用稀疏的基本思路有两个，一个时是只计算非稀疏的部分，一个是直接跳过稀疏部分。前一种思路需要在计算前先对稀疏数据做处理，把里面的零去掉，从而把稀疏数据变成稠密数据，最后通过硬件单元直接计算，这样所得的计算结果都是有效数据。这种思路可以高效地利用稀疏，不仅可以加快计算速速，还可以高能效，但是需要对硬件做较大的改动。而后一种思路，硬件改动简单，只需要判断输入是否为零，如果为零，则输出直接为零。</p>
+<p>​        为了进一步利用神经网络稀疏化的特点来降低存储和访存带宽，可以把稀疏化和量化压缩结合起来，最后神经元和权重所需的片上存储空间和访存带宽可以减少到十分之一左右。</p>
+<h5 id="6-4-3-低位宽"><a href="#6-4-3-低位宽" class="headerlink" title="6.4.3 低位宽"></a>6.4.3 低位宽</h5><p>​        在处理器设计时采用更低位宽的运算器，虽然很多神经网络算法在计算时采用32位的单精度浮点数，但实际上16位定点数或者8位定点数已经足够满足应用需求。</p>
+<h4 id="6-5-性能评价"><a href="#6-5-性能评价" class="headerlink" title="6.5 性能评价"></a>6.5 性能评价</h4><h5 id="6-5-1-性能指标"><a href="#6-5-1-性能指标" class="headerlink" title="6.5.1 性能指标"></a>6.5.1 性能指标</h5><p>​        深度学习处理器衡量计算能力的常用指标是TOPS（Tera Operations Per Second），即每秒执行多少万亿次操作。<br>$$<br>TOPS&#x3D;f_c\times (N_{mul}+N_{add})&#x2F;1000<br>$$<br>处理器主频 $f_c$的单位是 GHz，$N_{mul}$ 和 $N_{add}$分别表示每个时钟周期执行多少乘法或加法操作。</p>
+<p>​        处理器的实际性能还受到访存带宽BW的影响，包括访问外存的带宽、访问多级片上存储的带宽。其中<br>$$<br>BW&#x3D;f_m\times b\times \eta<br>$$<br>表示访存带宽BW与存储器的主频$f_m$ 、存储位宽 $b$、访存效率 $\eta$的关系。</p>
+<h5 id="6-5-2-基准测试"><a href="#6-5-2-基准测试" class="headerlink" title="6.5.2 基准测试"></a>6.5.2 基准测试</h5><p>​        基准测试程序MLPerf：</p>
+<p>​        <img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/6.4.1-%E5%9F%BA%E4%BA%8E%E6%A0%87%E9%87%8FMAC%E7%9A%84%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6-163428767617923.png" style="zoom:80%;" /></p>
+<h5 id="6-5-3-影响性能的因素"><a href="#6-5-3-影响性能的因素" class="headerlink" title="6.5.3 影响性能的因素"></a>6.5.3 影响性能的因素</h5><p>​        一个深度学习任务的运行时间可以写为：<br>$$<br>T&#x3D;\sum_iN_i\times C_i&#x2F;f_c<br>$$<br>其中𝑁𝑖表示该任务中第i类操作的数量，𝐶𝑖表示完成第i类操作所需要的时钟周期数，𝑓𝑐表示处理器的主频。</p>
+<p>​        因此，为了减少深度学习任务的处理时间，可以从以下几个方面入手：</p>
+<p>​        首先，减少经常出现的操作的执行周期数；其次，利用数据局部性，减少访存开销；最后，多级并行。</p>
+<h4 id="6-6-其他加速器"><a href="#6-6-其他加速器" class="headerlink" title="6.6 其他加速器"></a>6.6 其他加速器</h4><p>​        如表所示，DLP和其他加速器的比较：</p>
+<table>
+<thead>
+<tr>
+<th align="center">类别</th>
+<th align="center">目标</th>
+<th align="center">速度</th>
+<th align="center">能效</th>
+<th align="center">灵活性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">DLP</td>
+<td align="center">深度学习专用</td>
+<td align="center">高</td>
+<td align="center">高</td>
+<td align="center">深度学习领域通用</td>
+</tr>
+<tr>
+<td align="center">FPGA</td>
+<td align="center">通用可编程电路</td>
+<td align="center">低</td>
+<td align="center">中</td>
+<td align="center">通用</td>
+</tr>
+<tr>
+<td align="center">GPU</td>
+<td align="center">SIMT架构矩阵加速</td>
+<td align="center">中</td>
+<td align="center">低</td>
+<td align="center">矩阵类应用通用</td>
+</tr>
+</tbody></table>
+</div><div class="article-licensing box"><div class="licensing-title"><p>《智能计算系统》第六章</p><p><a href="http://caixindi.github.io/智能计算系统/《智能计算系统》第六章/">http://caixindi.github.io/智能计算系统/《智能计算系统》第六章/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Cindy</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-12-03</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0/">智能计算系统学习</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/%E3%80%8A%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E3%80%8B%E7%AC%AC%E4%BA%94%E7%AB%A0/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">《智能计算系统》第五章</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/%E3%80%8A%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E3%80%8B%E7%AC%AC%E4%B8%83%E7%AB%A0/"><span class="level-item">《智能计算系统》第七章</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/20220313221114.png" alt="Cindy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Cindy</p><p class="is-size-6 is-block">Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Wuhan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">61</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">12</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">25</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/caixindi" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/caixindi"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#第六章-深度学习处理器原理"><span class="level-left"><span class="level-item">1</span><span class="level-item">第六章 深度学习处理器原理</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-1-深度学习处理器概述"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">6.1 深度学习处理器概述</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-1-1-深度学习处理器的意义"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">6.1.1 深度学习处理器的意义</span></span></a></li><li><a class="level is-mobile" href="#6-1-2-深度学习处理器的发展历史"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">6.1.2 深度学习处理器的发展历史</span></span></a></li><li><a class="level is-mobile" href="#6-1-3-设计思路"><span class="level-left"><span class="level-item">1.1.3</span><span class="level-item">6.1.3 设计思路</span></span></a></li></ul></li><li><a class="level is-mobile" href="#6-2-目标算法分析"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">6.2 目标算法分析</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-2-1-计算特征"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">6.2.1 计算特征</span></span></a></li><li><a class="level is-mobile" href="#6-2-2-访存特征"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">6.2.2 访存特征</span></span></a></li></ul></li><li><a class="level is-mobile" href="#6-3-深度学习处理器DLP结构"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">6.3 深度学习处理器DLP结构</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-3-1-指令集"><span class="level-left"><span class="level-item">1.3.1</span><span class="level-item">6.3.1 指令集</span></span></a></li><li><a class="level is-mobile" href="#6-3-2-流水线"><span class="level-left"><span class="level-item">1.3.2</span><span class="level-item">6.3.2 流水线</span></span></a></li><li><a class="level is-mobile" href="#6-3-3-运算部件"><span class="level-left"><span class="level-item">1.3.3</span><span class="level-item">6.3.3 运算部件</span></span></a></li><li><a class="level is-mobile" href="#6-3-4-访存部件"><span class="level-left"><span class="level-item">1.3.4</span><span class="level-item">6.3.4 访存部件</span></span></a></li><li><a class="level is-mobile" href="#6-3-5-算法到芯片的映射"><span class="level-left"><span class="level-item">1.3.5</span><span class="level-item">6.3.5 算法到芯片的映射</span></span></a></li></ul></li><li><a class="level is-mobile" href="#6-4-优化设计"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">6.4 优化设计</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-4-1-基于标量MAC的运算部件"><span class="level-left"><span class="level-item">1.4.1</span><span class="level-item">6.4.1 基于标量MAC的运算部件</span></span></a></li><li><a class="level is-mobile" href="#6-4-2-稀疏化"><span class="level-left"><span class="level-item">1.4.2</span><span class="level-item">6.4.2 稀疏化</span></span></a></li><li><a class="level is-mobile" href="#6-4-3-低位宽"><span class="level-left"><span class="level-item">1.4.3</span><span class="level-item">6.4.3 低位宽</span></span></a></li></ul></li><li><a class="level is-mobile" href="#6-5-性能评价"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">6.5 性能评价</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#6-5-1-性能指标"><span class="level-left"><span class="level-item">1.5.1</span><span class="level-item">6.5.1 性能指标</span></span></a></li><li><a class="level is-mobile" href="#6-5-2-基准测试"><span class="level-left"><span class="level-item">1.5.2</span><span class="level-item">6.5.2 基准测试</span></span></a></li><li><a class="level is-mobile" href="#6-5-3-影响性能的因素"><span class="level-left"><span class="level-item">1.5.3</span><span class="level-item">6.5.3 影响性能的因素</span></span></a></li></ul></li><li><a class="level is-mobile" href="#6-6-其他加速器"><span class="level-left"><span class="level-item">1.6</span><span class="level-item">6.6 其他加速器</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CS217/"><span class="level-start"><span class="level-item">CS217</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/EdgeX/"><span class="level-start"><span class="level-item">EdgeX</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/Git/"><span class="level-start"><span class="level-item">Git</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Golang/"><span class="level-start"><span class="level-item">Golang</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/kubeedge/"><span class="level-start"><span class="level-item">kubeedge</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">智能计算系统</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"><span class="level-start"><span class="level-item">杂七杂八</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A1%AC%E4%BB%B6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="level-start"><span class="level-item">硬件神经网络加速</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">神经网络与深度学习</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">计算机组成与体系结构</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS217-Lecture/"><span class="tag">CS217 Lecture</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E5%B9%B3%E5%8F%B0%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX平台构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E6%8E%A8%E7%90%86/"><span class="tag">EdgeX机器学习以及推理</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX构建</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%A6%82%E5%BF%B5/"><span class="tag">EdgeX概念</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E9%83%A8%E7%BD%B2/"><span class="tag">EdgeX部署</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Git%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><span class="tag">Git使用指南</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang%E5%9C%A3%E7%BB%8F/"><span class="tag">Golang圣经</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">Java并发编程</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Java知识点</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Linux知识点</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker%E9%83%A8%E7%BD%B2/"><span class="tag">docker部署</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge/"><span class="tag">kubeedge</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge-example/"><span class="tag">kubeedge example</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A5%BD%E7%9C%8B%E7%9A%84PowerShell/"><span class="tag">好看的PowerShell</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/"><span class="tag">快速傅里叶变换</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0/"><span class="tag">智能计算系统学习</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9A%97%E7%A1%85/"><span class="tag">暗硅</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E8%83%8C%E6%99%AF%E4%BB%A5%E5%8F%8A%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/"><span class="tag">硬件加速背景以及卷积神经网络优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="tag">神经网络与深度学习</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B2%97%E7%B2%92%E5%BA%A6%E5%8F%AF%E9%87%8D%E6%9E%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%8EPlasticine/"><span class="tag">粗粒度可重构体系结构与Plasticine</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="tag">计算机组成与体系结构</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="tag">轻量级神经网络加速</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E5%89%96%E6%9E%90/"><span class="tag">高性能矩阵乘法剖析</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a><p class="is-size-7"><span>&copy; 2022 Cindy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
