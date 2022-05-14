@@ -56,6 +56,7 @@ sudo make install
 #### 7. 配置systemd
 
 ```shell
+mkdir -p /usr/local/lib/systemd/system/
 cp containerd.service /usr/local/lib/systemd/system/containerd.service
 systemctl daemon-reload
 systemctl enable --now containerd
@@ -165,6 +166,7 @@ yum install -y kubelet-1.20.6 kubeadm-1.20.6 kubectl-1.20.6
 ```
 cat > /etc/sysconfig/kubelet <<EOF
 KUBELET_EXTRA_ARGS=--cgroup-driver=systemd
+KUBELET_EXTRA_ARGS=--fail-swap-on=false
 EOF
 ```
 
@@ -354,7 +356,7 @@ spec:
 
 
 
-#### Containerd 1.4在OpenEuler 20.03 LTS下的兼容性验证Containerd 1.4在CentOS 8.1下的兼容性验证
+#### Containerd 1.4在OpenEuler 20.03 LTS下的兼容性验证
 
 #### 1. 安装go
 
@@ -377,7 +379,7 @@ sudo unzip protoc-3.11.4-linux-aarch_64.zip -d /usr/local
 yum install btrfs-progs-devel
 ```
 
-#### 5. 安装runc
+#### 5. 安装runc及cni
 
 ```shell
 yum install libseccomp-devel
@@ -385,6 +387,10 @@ git clone https://github.com/opencontainers/runc
 cd runc
 make
 sudo make install
+
+wget https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-arm64-v1.1.1.tgz
+mkdir -p /opt/cni/bin
+tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.1.1.tgz
 ```
 
 #### 6. 安装containerd
@@ -401,6 +407,7 @@ sudo make install
 #### 7. 配置systemd
 
 ```shell
+mkdir -p /usr/local/lib/systemd/system/
 cp containerd.service /usr/local/lib/systemd/system/containerd.service
 systemctl daemon-reload
 systemctl enable --now containerd
