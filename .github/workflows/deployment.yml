@@ -40,3 +40,13 @@ jobs:
         git config --global user.email $GIT_EMAIL
         git commit -m "Site deployed by GitHub Actions"
         git push --force --quiet "https://$GH_TOKEN@$REPO" master:main
+    - name: Deploy to Aliyun Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-rltgoDzvO"
+        SOURCE: "./public/"
+        REMOTE_HOST: "39.104.160.208"
+        REMOTE_USER: caixd
+        TARGET: /home/caixd/web-blog
+        EXCLUDE: "/dist/, /node_modules/"
