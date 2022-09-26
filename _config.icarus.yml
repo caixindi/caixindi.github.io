@@ -223,7 +223,7 @@ widgets:
                 icon: fab fa-qq
                 url: 'tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=1435516315&website=www.oicqzone.com'
             Envelope:
-                icon: fab fa-envelope
+                icon: fas fa-envelope
                 url: 'mailto:1435516315@qq.com'
     # Table of contents widget configurations
     -
