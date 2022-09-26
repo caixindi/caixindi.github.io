@@ -48,5 +48,5 @@ jobs:
         SOURCE: "dist/"
         REMOTE_HOST: "39.104.160.208"
         REMOTE_USER: caixd
-        TARGET: /home/caixindi/webtest
+        TARGET: /home/caixd/webtest
         EXCLUDE: "/dist/, /node_modules/"
