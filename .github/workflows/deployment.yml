@@ -47,6 +47,6 @@ jobs:
         ARGS: "-rltgoDzvO"
         SOURCE: "dist/"
         REMOTE_HOST: "39.104.160.208"
-        REMOTE_USER: caixindi
+        REMOTE_USER: caixd
         TARGET: /home/caixindi/webtest
         EXCLUDE: "/dist/, /node_modules/"
