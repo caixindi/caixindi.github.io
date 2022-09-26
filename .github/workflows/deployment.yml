@@ -40,3 +40,13 @@ jobs:
         git config --global user.email $GIT_EMAIL
         git commit -m "Site deployed by GitHub Actions"
         git push --force --quiet "https://$GH_TOKEN@$REPO" master:main
+    - name: Deploy to Staging server
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        ARGS: "-rltgoDzvO"
+        SOURCE: "dist/"
+        REMOTE_HOST: "39.104.160.208"
+        REMOTE_USER: caixindi
+        TARGET: /home/caixindi/webtest
+        EXCLUDE: "/dist/, /node_modules/"
