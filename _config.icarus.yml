@@ -219,15 +219,12 @@ widgets:
             Github:
                 icon: fab fa-github
                 url: 'https://github.com/caixindi'
-            Facebook:
+            QQ:
                 icon: fab fa-qq
                 url: 'tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=1435516315&website=www.oicqzone.com'
-            Twitter:
-                icon: fab weixin
-                url: 'https://twitter.com'
-            Dribbble:
-                icon: fab envelope
-                url: '1435516315@qq.com'
+            Envelope:
+                icon: fab fa-envelope
+                url: 'mailto:1435516315@qq.com'
     # Table of contents widget configurations
     -
         # Where should the widget be placed, left sidebar or right sidebar
