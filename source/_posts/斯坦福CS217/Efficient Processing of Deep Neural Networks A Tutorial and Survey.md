@@ -1,5 +1,5 @@
 ---
-title: Efficient Processing of Deep  Neural Networks: A Tutorial and Survey
+title: Efficient Processing of Deep Neural Networks: A Tutorial and Survey
 date: 2021-12-03
 categories:
 - CS217
