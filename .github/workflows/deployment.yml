@@ -26,7 +26,7 @@ jobs:
         npm i -g hexo-cli
         npm install --save bulma-stylus@0.8.0 hexo-pagination@^2.0.0 hexo-renderer-inferno@^0.1.3
         npm i
-        sed -i "40i <br><\/br><img src="https:\/\/cxd-note-img.oss-cn-hangzhou.aliyuncs.com\/typora-note-img\/beian.png"><\/img><a href="https:\/\/beian.miit.gov.cn" target="_blank" rel="noopener">苏ICP备2022041101号-1<\/a>" node_modules/hexo-theme-icarus/layout/common/footer.jsx
+        sed -i "40i <br><\/br><img src="https:\/\/cxd-note-img.oss-cn-hangzhou.aliyuncs.com\/typora-note-img\/beian.png"><\/img><span>苏ICP备2022041101号-1<\/span>" node_modules/hexo-theme-icarus/layout/common/footer.jsx
         hexo clean
         hexo g
     - name: Deploy to Github Pages
