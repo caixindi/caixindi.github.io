@@ -44,10 +44,10 @@ jobs:
     - name: Deploy to Aliyun Server
       uses: easingthemes/ssh-deploy@main
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
         ARGS: "-rltgoDzvO"
         SOURCE: "./public/"
-        REMOTE_HOST: "39.104.160.208"
+        REMOTE_HOST: "47.92.101.195"
         REMOTE_USER: caixd
         TARGET: /home/caixd/web-blog
         EXCLUDE: "/dist/, /node_modules/"
