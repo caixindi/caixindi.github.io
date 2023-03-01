@@ -104,7 +104,7 @@ Java IO使用了装饰者模式
 >
 > DataInputStream 装饰者提供了对更多数据类型进行输入的操作，比如 int、double 等基本类型。
 
-![image-20230224154427001](D:/Typora-note/img/java%E9%9D%A2%E8%AF%95%E9%A2%98%E6%80%BB%E7%BB%93/image-20230224154427001.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20230224154427001.png)
 
 #### InputStream类源码实现
 
