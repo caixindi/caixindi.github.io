@@ -1,5 +1,5 @@
 ---
-title: 关于hashcode的理解
+title: Java IO流
 date: 2023-03-01
 categories:
 - Java
@@ -13,7 +13,7 @@ toc: true
 
 java io流知识体系（引用自[pdai](pdai.tech)）
 
-![](D:/Typora-note/img/java%20IO/java-io-overview2-16772194070193.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/java-io-overview2-16772194070193.png)
 
 Java.io 包几乎包含了所有操作输入、输出需要的类。所有这些流类代表了输入源和输出目标。
 
@@ -104,7 +104,7 @@ Java IO使用了装饰者模式
 >
 > DataInputStream 装饰者提供了对更多数据类型进行输入的操作，比如 int、double 等基本类型。
 
-![image-20230224154427001](D:/Typora-note/img/java%20IO/image-20230224154427001.png)
+![image-20230224154427001](D:/Typora-note/img/java%E9%9D%A2%E8%AF%95%E9%A2%98%E6%80%BB%E7%BB%93/image-20230224154427001.png)
 
 #### InputStream类源码实现
 
@@ -113,6 +113,7 @@ Java IO使用了装饰者模式
 >Java读取字节流的read方法一次读一个byte返回int的原因：
 >
 >读取二进制数据按字节读取，每次读一个字节（byte）。read()的底层是由C++实现的（native函数），返回的是unsigned byte，取值范围为[0~255]，但在java中没有对应的类型，所以只能用int类型接收，由Java接收转为int，范围为[0，255]。
+>
 
 ```java
 // 读取下一个字节，如果没有则返回-1
@@ -444,7 +445,7 @@ public abstract class InputStream implements Closeable {
 
 FilterInputStream是InputStream特殊的子类，其是装饰者模式的应用。
 
-![](D:/Typora-note/img/java%20IO/image-20230227143834398.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20230227143834398.png)
 
 在FilterStream类中，有如下field：
 
@@ -472,7 +473,7 @@ public int read() throws IOException {
 
 `FilterInputStream`作为装饰者类，其子类如下：
 
-![](D:/Typora-note/img/java%20IO/image-20230227155615813.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20230227155615813.png)
 
 ###### DataInputStream
 
@@ -480,7 +481,7 @@ public int read() throws IOException {
 
 其成员方法如下：
 
-![](D:/Typora-note/img/java%20IO/image-20230227160429266.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20230227160429266.png)
 
 以`readInt()`方法为例，以下是其源码：
 
@@ -504,7 +505,7 @@ public final int readInt() throws IOException {
 
 其类图如下：
 
-![](D:/Typora-note/img/java%20IO/image-20230227161149065.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20230227161149065.png)
 
 
 
@@ -577,7 +578,7 @@ public synchronized int read() throws IOException {
 
 ##### OutputStream类实现关系
 
-![](D:/Typora-note/img/java%20IO/io-outputstream-1.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/io-outputstream-1.png)
 
 ##### OutputStream抽象类
 
