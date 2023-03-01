@@ -79,13 +79,13 @@ public static int hashCode(byte[] value) {
 
 这是Integer类下的hashCode方法，直接返回了value的值
 
-![](D:/Typora-note/img/hashcode%E7%9A%84%E7%90%86%E8%A7%A3/image-20211013185430971.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211013185430971.png)
 
 这是Float类下的hashCode方法，返回了浮点数IEEE754的表示形式
 
-![image-20211013185952426](D:/Typora-note/img/hashcode%E7%9A%84%E7%90%86%E8%A7%A3/image-20211013185952426.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211013185952426.png)
 
-![image-20211013190013169](D:/Typora-note/img/hashcode%E7%9A%84%E7%90%86%E8%A7%A3/image-20211013190013169.png)
+![](https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211013190013169.png)
 
 ```java
 //测试
