@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>java反射 - Cindy</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="Cindy Page"><meta name="msapplication-TileImage" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Cindy Page"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="反射 Java反射机制是在运行状态中，对于任何一个类，都能获得它的所有属性和方法，对于任何一个对象，都能够调用它的任意一个方法和属性。  RTTI（Run-Time Type Identification）运行时类型识别。其作用是在运行时识别一个对象的类型和类的信息。主要有两种方式：一种是“传统的”RTTI，它假定我们在编译时已经知道了所有的类型；另一种是“反射”机制，它允许我们在运行时发现和使用"><meta property="og:type" content="blog"><meta property="og:title" content="java反射"><meta property="og:url" content="http://caixindi.github.io/Java/java%E5%8F%8D%E5%B0%84/"><meta property="og:site_name" content="Cindy"><meta property="og:description" content="反射 Java反射机制是在运行状态中，对于任何一个类，都能获得它的所有属性和方法，对于任何一个对象，都能够调用它的任意一个方法和属性。  RTTI（Run-Time Type Identification）运行时类型识别。其作用是在运行时识别一个对象的类型和类的信息。主要有两种方式：一种是“传统的”RTTI，它假定我们在编译时已经知道了所有的类型；另一种是“反射”机制，它允许我们在运行时发现和使用"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://caixindi.github.io/img/og_image.png"><meta property="article:published_time" content="2023-02-22T16:00:00.000Z"><meta property="article:author" content="Cindy"><meta property="article:tag" content="Java知识点"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://caixindi.github.io/Java/java%E5%8F%8D%E5%B0%84/"},"headline":"java反射","image":["http://caixindi.github.io/img/og_image.png"],"datePublished":"2023-02-22T16:00:00.000Z","author":{"@type":"Person","name":"Cindy"},"publisher":{"@type":"Organization","name":"Cindy","logo":{"@type":"ImageObject","url":"https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg"}},"description":"反射 Java反射机制是在运行状态中，对于任何一个类，都能获得它的所有属性和方法，对于任何一个对象，都能够调用它的任意一个方法和属性。  RTTI（Run-Time Type Identification）运行时类型识别。其作用是在运行时识别一个对象的类型和类的信息。主要有两种方式：一种是“传统的”RTTI，它假定我们在编译时已经知道了所有的类型；另一种是“反射”机制，它允许我们在运行时发现和使用"}</script><link rel="canonical" href="http://caixindi.github.io/Java/java%E5%8F%8D%E5%B0%84/"><link rel="icon" href="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-02-22T16:00:00.000Z" title="2/23/2023, 12:00:00 AM">2023-02-23</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a></span><span class="level-item">32 分钟读完 (大约4780个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">java反射</h1><div class="content"><h3 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h3><blockquote>
+<p>Java反射机制是在运行状态中，对于任何一个类，都能获得它的所有属性和方法，对于任何一个对象，都能够调用它的任意一个方法和属性。</p>
+</blockquote>
+<p>RTTI（Run-Time Type Identification）运行时类型识别。其作用是在运行时识别一个对象的类型和类的信息。主要有两种方式：一种是“传统的”RTTI，它假定我们在编译时已经知道了所有的类型；另一种是“反射”机制，它允许我们在运行时发现和使用类的信息。反射就是把java类中的各种成分映射成一个个的Java对象。如果要动态获取到这些信息，需要依靠<code>Class</code>对象。<code>Class</code>类对象将一个类的方法、变量等信息告诉运行的程序。</p>
+<span id="more"></span>
+
+<h4 id="如何获取Class对象"><a href="#如何获取Class对象" class="headerlink" title="如何获取Class对象"></a>如何获取Class对象</h4><ol>
+<li><p>通过类名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> TargetObject.class;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过类的全限定名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;com.example.TargetObject&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过对象实例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> instance.getClass();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过类加载器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> ClassLoader.getSystemClassLoader().loadClass(<span class="string">&quot;com.example.TargetObject&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>通过类加载器获取Class对象不会进行初始化，意味着不进行包括初始化等一系列步骤，静态代码块和静态对象不会得到执行</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>Class类的方法</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">方法名</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">forName()</td>
+<td align="left">返回一个给定类或者接口的一个<code>Class</code>对象，如果没有给定classloader，那么会使用根类加载器。如果 initalize 参数为true（默认为true），那么给定的类如果之前没有被初始化过，那么会被初始化。</td>
+</tr>
+<tr>
+<td align="left">getClass()</td>
+<td align="left">获取Class对象的一个引用，返回表示该对象的实际类型的Class引用。</td>
+</tr>
+<tr>
+<td align="left">getName()</td>
+<td align="left">获取类的全限定名。</td>
+</tr>
+<tr>
+<td align="left">getSimpleName()</td>
+<td align="left">获取类名（不包括包名）。</td>
+</tr>
+<tr>
+<td align="left">getCanonicalName()</td>
+<td align="left">获取全限定的类名(包括包名)。</td>
+</tr>
+<tr>
+<td align="left">isInterface()</td>
+<td align="left">判断该class对象是否为接口。</td>
+</tr>
+<tr>
+<td align="left">getInterfaces()</td>
+<td align="left">返回Class对象数组，表示Class对象所引用的类所实现的所有接口。</td>
+</tr>
+<tr>
+<td align="left">getSuperclass()</td>
+<td align="left">返回Class对象，表示Class对象所引用的类所继承的直接基类。</td>
+</tr>
+<tr>
+<td align="left">newInstance()</td>
+<td align="left">返回Object对象，用于创建类的新实例，要求该类拥有无参构造函数。</td>
+</tr>
+<tr>
+<td align="left">getFields()</td>
+<td align="left">获得该类所有的公共（public）的字段，包括继承自父类的所有公共字段。</td>
+</tr>
+<tr>
+<td align="left">getMethods()</td>
+<td align="left">返回一个包含Method对象的数组，该对象反映了该Class对象所表示的类或接口的所有公共成员方法，包括类或接口声明的方法以及从超类和超接口继承的方法。</td>
+</tr>
+<tr>
+<td align="left">getConstructors()</td>
+<td align="left">返回一个包含Constructor对象的数组，即获取该类的所有公共构造函数。</td>
+</tr>
+<tr>
+<td align="left">getDeclaredFields()</td>
+<td align="left">获得某个类声明的字段，即包括public、private和proteced，但是不包括父类声明的任何字段。</td>
+</tr>
+<tr>
+<td align="left">getDeclaredMethods()</td>
+<td align="left">返回一个包含Method对象的数组，该对象反映了该Class对象所表示的类或接口的所有成员方法，包括类或接口声明的方法。</td>
+</tr>
+<tr>
+<td align="left">getDeclaredConstructors()</td>
+<td align="left">返回一个包含Constructor对象的数组，即获取该类的所有构造函数。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>getName、getSimpleName、getCanonicalName的区别</p>
+<p>getName只获取类名，getSimpleName和getCanonicalName是获取类的全限定名，大部分情况下其返回结果相同，但是在数组、内部类的情况下有所不同。</p>
+</blockquote>
+<h4 id="Constructor类"><a href="#Constructor类" class="headerlink" title="Constructor类"></a>Constructor类</h4><blockquote>
+<p>Constructor类存在于反射包（java.lang.reflect）中，反映的是Class对象所表示的类构造方法。</p>
+</blockquote>
+<p>获取Constructor对象是通过Class类中的方法实现的，Class类与Constructo类相关的主要方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>forName(String className)</td>
+<td>返回带有给定字符串名的类或接口相关联的Class对象</td>
+</tr>
+<tr>
+<td>getConstructor(Class&lt;?&gt;… parameterTypes)</td>
+<td>返回指定参数类型、具有public访问权限的构造函数对象</td>
+</tr>
+<tr>
+<td>Constructor&lt;?&gt;[]</td>
+<td>返回所有具有public访问权限的构造函数的Constructor对象数组</td>
+</tr>
+<tr>
+<td>getDeclaredConstructor(Class&lt;?&gt;… parameterTypes)</td>
+<td>返回指定参数类型、所有声明的（包括private）构造函数对象</td>
+</tr>
+<tr>
+<td>getDeclaredConstructors()</td>
+<td>返回所有声明的（包括private）构造函数对象</td>
+</tr>
+<tr>
+<td>newInstance()</td>
+<td>调用无参构造器创建此 Class 对象所表示的类的一个新实例。</td>
+</tr>
+</tbody></table>
+<h4 id="Field类及其用法"><a href="#Field类及其用法" class="headerlink" title="Field类及其用法"></a>Field类及其用法</h4><blockquote>
+<p>Field提供有关类或接口的单个字段信息，并且可以获得动态访问权限。反射的字段可能是一个类（静态）或实例字段。</p>
+</blockquote>
+<p>获取类的字段Field是通过Class类中的方法实现的，Class类与Field类相关的主要方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>getDeclaredField(String name)</td>
+<td>获取指定名称的字段，不包括继承的字段</td>
+</tr>
+<tr>
+<td>getDeclaredFields()</td>
+<td>获取Class对象所表示的类或接口的所有字段，不包括继承字段</td>
+</tr>
+<tr>
+<td>getField(String name)</td>
+<td>获取指定名称的公共字段，包括继承字段</td>
+</tr>
+<tr>
+<td>getFields()</td>
+<td>获取Class对象所表示的类或接口的所有公共字段，包括继承字段</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>需要注意的是，如果我们不希望获取父类的字段，则需要使用Class类的getDeclaredField或者getDeclaredFields方法来获取字段，如果需要获取父类的字段，则需要使用getField或者getFields，但也只能获取到公共字段，无法获取私有字段。对于私有字段，需要使用setAccessible方法将该字段设置为可访问。</p>
+</blockquote>
+<p>Field类的常用方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>set(Object obj, Object value)</td>
+<td>将指定对象变量上此 Field 对象表示的字段设置为指定的新值。</td>
+</tr>
+<tr>
+<td>get(Object obj)</td>
+<td>返回指定对象上此 Field 表示的字段的值</td>
+</tr>
+<tr>
+<td>getType()</td>
+<td>返回一个 Class 对象，它标识了此Field 对象所表示字段的声明类型。</td>
+</tr>
+<tr>
+<td>isEnumConstant()</td>
+<td>如果此字段表示枚举类型的元素则返回 true；否则返回 false</td>
+</tr>
+<tr>
+<td>toGenericString()</td>
+<td>返回一个描述此 Field（包括其一般类型）的字符串</td>
+</tr>
+<tr>
+<td>getName()</td>
+<td>返回此 Field 对象表示的字段的名称</td>
+</tr>
+<tr>
+<td>getDeclaringClass()</td>
+<td>返回表示类或接口的 Class 对象，该类或接口声明由此 Field 对象表示的字段</td>
+</tr>
+<tr>
+<td>setAccessible(boolean flag)</td>
+<td>将此对象的 accessible 标志设置为指示的布尔值,即设置其可访问性</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>被final关键字修饰的Field字段是安全的，在运行时虽然可以接收任何修改，但最终其实际值是不会发生改变的。</p>
+</blockquote>
+<h4 id="Method类及其用法"><a href="#Method类及其用法" class="headerlink" title="Method类及其用法"></a>Method类及其用法</h4><blockquote>
+<p>Method类提供关于类或接口上单独某个方法（以及如何访问该方法）的信息，所反映的方法可能是类方法或实例方法（包括抽象方法）。</p>
+</blockquote>
+<p>获取类的方法Method是通过Class类中的方法实现的，Class类与Method类相关的主要方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>getDeclaredMethod(String name, Class&lt;?&gt;… parameterTypes)</td>
+<td>返回一个指定参数的Method对象，该对象反映此Class对象所表示的类或接口的指定已声明方法。</td>
+</tr>
+<tr>
+<td>getDeclaredMethods()</td>
+<td>返回Method对象的一个数组，这些对象反映此Class对象表示的类或接口声明的所有方法，包括公共、保护、默认（包）访问和私有方法，但不包括继承的方法。</td>
+</tr>
+<tr>
+<td>getMethod(String name, Class&lt;?&gt;… parameterTypes)</td>
+<td>返回一个指定参数的Method对象，该对象反映此Class对象所表示的类或接口的指定已声明的公共成员方法，包括继承的方法。</td>
+</tr>
+<tr>
+<td>getMethods()</td>
+<td>返回Method对象的一个数组，这些对象反映此 Class 对象所表示的类或接口（包括那些由该类或接口声明的以及从超类和超接口继承的那些的类或接口）的公共成员方法。</td>
+</tr>
+</tbody></table>
+<p>Method类常用的方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>invoke(Object obj, Object… args)</td>
+<td>对带有指定参数的指定对象调用由此Method对象表示的方法。</td>
+</tr>
+<tr>
+<td>getReturnType()</td>
+<td>返回一个Class对象，该对象描述了此Method对象所表示的方法的返回类型,即方法的返回类型</td>
+</tr>
+<tr>
+<td>getGenericReturnType()</td>
+<td>返回表示由此Method对象所表示方法的正式返回类型的 Type 对象，也是方法的返回类型。</td>
+</tr>
+<tr>
+<td>getParameterTypes()</td>
+<td>按照声明顺序返回Class对象的数组，这些对象描述了此Method对象所表示的方法的形参类型。即返回方法的参数类型组成的数组</td>
+</tr>
+<tr>
+<td>getGenericParameterTypes()</td>
+<td>按照声明顺序返回Type对象的数组，这些对象描述了此Method对象所表示的方法的形参类型的，也是返回方法的参数类型</td>
+</tr>
+<tr>
+<td>getName()</td>
+<td>以String形式返回此Method对象表示的方法名称，即返回方法的名称</td>
+</tr>
+<tr>
+<td>isVarArgs()</td>
+<td>判断方法是否带可变参数，如果将此方法声明为带有可变数量的参数，则返回true；否则，返回false。</td>
+</tr>
+<tr>
+<td>toGenericString()</td>
+<td>返回描述此 Method 的字符串，包括类型参数。</td>
+</tr>
+</tbody></table>
+<h3 id="反射机制的执行流程"><a href="#反射机制的执行流程" class="headerlink" title="反射机制的执行流程"></a>反射机制的执行流程</h3><h4 id="反射获取类实例"><a href="#反射获取类实例" class="headerlink" title="反射获取类实例"></a>反射获取类实例</h4><p>首先调用<code>java.lang.Class</code>的forName方法，获取类信息</p>
+<blockquote>
+<p>forName()首选通过反射获取类信息，通过jvm去完成</p>
+<p>首先获取调用类的ClassLoader, 然后调用native方法，获取给定name的类信息，最后回调java.lang.ClassLoader.loadClass进行类加载</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Class&lt;?&gt; forName(String className)</span><br><span class="line">            <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    <span class="comment">// 先通过反射区获取调用进来的类信息 getCallerClass为native方法</span></span><br><span class="line">    Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">    <span class="comment">// 调用native方法进行获取class信息</span></span><br><span class="line">    <span class="keyword">return</span> forName0(className, <span class="literal">true</span>, ClassLoader.getClassLoader(caller), caller);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来是<code>newInstance()</code>方法：</p>
+<blockquote>
+<p><code>newInstance()</code>主要工作如下：</p>
+<ul>
+<li>权限检测，如果不通过直接抛出异常；</li>
+<li>查找无参构造器，并将其缓存起来；</li>
+<li>调用具体方法的无参构造方法，生成实例并返回；</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="keyword">public</span> T <span class="title function_">newInstance</span><span class="params">()</span></span><br><span class="line">    <span class="keyword">throws</span> InstantiationException, IllegalAccessException</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (System.getSecurityManager() != <span class="literal">null</span>) &#123;</span><br><span class="line">        checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">NOTE:</span> the following code may not be strictly correct under</span></span><br><span class="line">    <span class="comment">// the current Java memory model.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Constructor lookup</span></span><br><span class="line">    <span class="comment">// 寻找构造函数（无参构造函数） </span></span><br><span class="line">    <span class="comment">// 如果没有缓存</span></span><br><span class="line">    <span class="keyword">if</span> (cachedConstructor == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span> == Class.class) &#123;</span><br><span class="line">            <span class="comment">// 不能调用Class类的newInstance()方法</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalAccessException</span>(</span><br><span class="line">                <span class="string">&quot;Can not call newInstance() on the Class for java.lang.Class&quot;</span></span><br><span class="line">            );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 寻找无参构造器</span></span><br><span class="line">            Class&lt;?&gt;[] empty = &#123;&#125;;</span><br><span class="line">            <span class="keyword">final</span> Constructor&lt;T&gt; c = getConstructor0(empty, Member.DECLARED);</span><br><span class="line">            <span class="comment">// Disable accessibility checks on the constructor</span></span><br><span class="line">            <span class="comment">// since we have to do the security check here anyway</span></span><br><span class="line">            <span class="comment">// (the stack depth is wrong for the Constructor&#x27;s</span></span><br><span class="line">            <span class="comment">// security check to work)</span></span><br><span class="line">            <span class="comment">// 禁用构造函数的可访问性检查，因为无论如何都必须在这里进行安全检查</span></span><br><span class="line">            java.security.AccessController.doPrivileged(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">java</span>.security.PrivilegedAction&lt;Void&gt;() &#123;</span><br><span class="line">                    <span class="keyword">public</span> Void <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                            c.setAccessible(<span class="literal">true</span>);</span><br><span class="line">                            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">            <span class="comment">// 存入缓存</span></span><br><span class="line">            cachedConstructor = c;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> (InstantiationException)</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InstantiationException</span>(getName()).initCause(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    Constructor&lt;T&gt; tmpConstructor = cachedConstructor;</span><br><span class="line">    <span class="comment">// Security check (same as in java.lang.reflect.Constructor)</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">modifiers</span> <span class="operator">=</span> tmpConstructor.getModifiers();</span><br><span class="line">    <span class="keyword">if</span> (!Reflection.quickCheckMemberAccess(<span class="built_in">this</span>, modifiers)) &#123;</span><br><span class="line">        Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">        <span class="keyword">if</span> (newInstanceCallerCache != caller) &#123;</span><br><span class="line">            Reflection.ensureMemberAccess(caller, <span class="built_in">this</span>, <span class="literal">null</span>, modifiers);</span><br><span class="line">            newInstanceCallerCache = caller;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Run constructor</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> tmpConstructor.newInstance((Object[])<span class="literal">null</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">        Unsafe.getUnsafe().throwException(e.getTargetException());</span><br><span class="line">        <span class="comment">// Not reached</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是获取类构造器的过程：</p>
+<blockquote>
+<p>getConstructor0() 为获取匹配的构造方器；分三步：</p>
+<ul>
+<li>先获取所有的constructors, 然后通过进行参数类型比较；</li>
+<li>找到匹配后，通过 ReflectionFactory 拷贝一份constructor返回；</li>
+<li>否则抛出 NoSuchMethodException;</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Constructor&lt;T&gt; <span class="title function_">getConstructor0</span><span class="params">(Class&lt;?&gt;[] parameterTypes,</span></span><br><span class="line"><span class="params">                                    <span class="type">int</span> which)</span> <span class="keyword">throws</span> NoSuchMethodException</span><br><span class="line">&#123;</span><br><span class="line">    Constructor&lt;T&gt;[] constructors = privateGetDeclaredConstructors((which == Member.PUBLIC));</span><br><span class="line">    <span class="keyword">for</span> (Constructor&lt;T&gt; constructor : constructors) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arrayContentsEq(parameterTypes,</span><br><span class="line">                            constructor.getParameterTypes())) &#123;</span><br><span class="line">            <span class="keyword">return</span> getReflectionFactory().copyConstructor(constructor);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchMethodException</span>(getName() + <span class="string">&quot;.&lt;init&gt;&quot;</span> + argumentTypesToString(parameterTypes));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>privateGetDeclaredConstructors(), 获取所有的构造器的大致步骤为：</p>
+<ul>
+<li>先尝试从缓存中获取；</li>
+<li>如果缓存没有，则通过jvm获取，获取之后存入缓存，缓存使用软引用进行保存，保证内存可用</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取当前类所有的构造方法，通过jvm或者缓存</span></span><br><span class="line"><span class="comment">// Returns an array of &quot;root&quot; constructors. These Constructor</span></span><br><span class="line"><span class="comment">// objects must NOT be propagated to the outside world, but must</span></span><br><span class="line"><span class="comment">// instead be copied via ReflectionFactory.copyConstructor.</span></span><br><span class="line"><span class="keyword">private</span> Constructor&lt;T&gt;[] privateGetDeclaredConstructors(<span class="type">boolean</span> publicOnly) &#123;</span><br><span class="line">    checkInitted();</span><br><span class="line">    Constructor&lt;T&gt;[] res;</span><br><span class="line">    <span class="comment">// 调用 reflectionData(), 获取保存的信息，使用软引用保存，从而使内存不够可以回收</span></span><br><span class="line">    ReflectionData&lt;T&gt; rd = reflectionData();</span><br><span class="line">    <span class="keyword">if</span> (rd != <span class="literal">null</span>) &#123;</span><br><span class="line">        res = publicOnly ? rd.publicConstructors : rd.declaredConstructors;</span><br><span class="line">        <span class="comment">// 存在缓存，则直接返回</span></span><br><span class="line">        <span class="keyword">if</span> (res != <span class="literal">null</span>) <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// No cached value available; request value from VM</span></span><br><span class="line">    <span class="keyword">if</span> (isInterface()) &#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">        Constructor&lt;T&gt;[] temporaryRes = (Constructor&lt;T&gt;[]) <span class="keyword">new</span> <span class="title class_">Constructor</span>&lt;?&gt;[<span class="number">0</span>];</span><br><span class="line">        res = temporaryRes;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 使用native方法从jvm获取构造器</span></span><br><span class="line">        res = getDeclaredConstructors0(publicOnly);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rd != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 最后，将从jvm中读取的内容，存入缓存</span></span><br><span class="line">        <span class="keyword">if</span> (publicOnly) &#123;</span><br><span class="line">            rd.publicConstructors = res;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rd.declaredConstructors = res;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Lazily create and cache ReflectionData</span></span><br><span class="line"><span class="keyword">private</span> ReflectionData&lt;T&gt; <span class="title function_">reflectionData</span><span class="params">()</span> &#123;</span><br><span class="line">    SoftReference&lt;ReflectionData&lt;T&gt;&gt; reflectionData = <span class="built_in">this</span>.reflectionData;</span><br><span class="line">    <span class="type">int</span> <span class="variable">classRedefinedCount</span> <span class="operator">=</span> <span class="built_in">this</span>.classRedefinedCount;</span><br><span class="line">    ReflectionData&lt;T&gt; rd;</span><br><span class="line">    <span class="keyword">if</span> (useCaches &amp;&amp;</span><br><span class="line">        reflectionData != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">        (rd = reflectionData.get()) != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">        rd.redefinedCount == classRedefinedCount) &#123;</span><br><span class="line">        <span class="keyword">return</span> rd;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// else no SoftReference or cleared SoftReference or stale ReflectionData</span></span><br><span class="line">    <span class="comment">// -&gt; create and replace new instance</span></span><br><span class="line">    <span class="keyword">return</span> newReflectionData(reflectionData, classRedefinedCount);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新创建缓存，保存反射信息 使用SoftReference 软引用</span></span><br><span class="line"><span class="keyword">private</span> ReflectionData&lt;T&gt; <span class="title function_">newReflectionData</span><span class="params">(SoftReference&lt;ReflectionData&lt;T&gt;&gt; oldReflectionData,</span></span><br><span class="line"><span class="params">                                            <span class="type">int</span> classRedefinedCount)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!useCaches) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 使用cas保证更新的线程安全性，所以反射是保证线程安全的</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        ReflectionData&lt;T&gt; rd = <span class="keyword">new</span> <span class="title class_">ReflectionData</span>&lt;&gt;(classRedefinedCount);</span><br><span class="line">        <span class="comment">// try to CAS it...</span></span><br><span class="line">        <span class="keyword">if</span> (Atomic.casReflectionData(<span class="built_in">this</span>, oldReflectionData, <span class="keyword">new</span> <span class="title class_">SoftReference</span>&lt;&gt;(rd))) &#123;</span><br><span class="line">            <span class="keyword">return</span> rd;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 先使用CAS更新，如果更新成功，则立即返回，否则测查当前已被其他线程更新的情况，如果和自己想要更新的状态一致，则也算是成功了</span></span><br><span class="line">        oldReflectionData = <span class="built_in">this</span>.reflectionData;</span><br><span class="line">        classRedefinedCount = <span class="built_in">this</span>.classRedefinedCount;</span><br><span class="line">        <span class="keyword">if</span> (oldReflectionData != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">            (rd = oldReflectionData.get()) != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">            rd.redefinedCount == classRedefinedCount) &#123;</span><br><span class="line">            <span class="keyword">return</span> rd;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如何得到所要获取的构造器：</p>
+<blockquote>
+<p>比较类型 只要有其中一个类型不相等 则直接返回false</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">arrayContentsEq</span><span class="params">(Object[] a1, Object[] a2)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (a1 == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">return</span> <span class="variable">a2</span> <span class="operator">=</span>= <span class="literal">null</span> || a2.length == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (a2 == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> a1.length == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (a1.length != a2.length) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; a1.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (a1[i] != a2[i]) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// sun.reflect.ReflectionFactory</span></span><br><span class="line"><span class="comment">/** Makes a copy of the passed constructor. The returned</span></span><br><span class="line"><span class="comment">    constructor is a &quot;child&quot; of the passed one; see the comments</span></span><br><span class="line"><span class="comment">    in Constructor.java for details. */</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; Constructor&lt;T&gt; <span class="title function_">copyConstructor</span><span class="params">(Constructor&lt;T&gt; arg)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> langReflectAccess().copyConstructor(arg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// java.lang.reflect.Constructor, copy 其实就是新new一个 Constructor 出来</span></span><br><span class="line">Constructor&lt;T&gt; <span class="title function_">copy</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// This routine enables sharing of ConstructorAccessor objects</span></span><br><span class="line">    <span class="comment">// among Constructor objects which refer to the same underlying</span></span><br><span class="line">    <span class="comment">// method in the VM. (All of this contortion is only necessary</span></span><br><span class="line">    <span class="comment">// because of the &quot;accessibility&quot; bit in AccessibleObject,</span></span><br><span class="line">    <span class="comment">// which implicitly requires that new java.lang.reflect</span></span><br><span class="line">    <span class="comment">// objects be fabricated for each reflective call on Class</span></span><br><span class="line">    <span class="comment">// objects.)</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.root != <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;Can not copy a non-root Constructor&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Constructor&lt;T&gt; res = <span class="keyword">new</span> <span class="title class_">Constructor</span>&lt;&gt;(clazz,</span><br><span class="line">                                           parameterTypes,</span><br><span class="line">                                           exceptionTypes, modifiers, slot,</span><br><span class="line">                                           signature,</span><br><span class="line">                                           annotations,</span><br><span class="line">                                           parameterAnnotations);</span><br><span class="line">    <span class="comment">// root 指向当前 constructor</span></span><br><span class="line">    res.root = <span class="built_in">this</span>;</span><br><span class="line">    <span class="comment">// Might as well eagerly propagate this if already present</span></span><br><span class="line">    res.constructorAccessor = constructorAccessor;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得到构造器之后，需要调用构造器的<code>newInstance()</code>方法，即可得到实例</p>
+<blockquote>
+<p>得到实例之后需要进行类型转换</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="keyword">public</span> T <span class="title function_">newInstance</span><span class="params">(Object ... initargs)</span></span><br><span class="line">    <span class="keyword">throws</span> InstantiationException, IllegalAccessException,</span><br><span class="line">           IllegalArgumentException, InvocationTargetException</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!override) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!Reflection.quickCheckMemberAccess(clazz, modifiers)) &#123;</span><br><span class="line">            Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">            checkAccess(caller, clazz, <span class="literal">null</span>, modifiers);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ((clazz.getModifiers() &amp; Modifier.ENUM) != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;Cannot reflectively create enum objects&quot;</span>);</span><br><span class="line">    <span class="type">ConstructorAccessor</span> <span class="variable">ca</span> <span class="operator">=</span> constructorAccessor;   <span class="comment">// read volatile</span></span><br><span class="line">    <span class="keyword">if</span> (ca == <span class="literal">null</span>) &#123;</span><br><span class="line">        ca = acquireConstructorAccessor();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">    <span class="type">T</span> <span class="variable">inst</span> <span class="operator">=</span> (T) ca.newInstance(initargs);</span><br><span class="line">    <span class="keyword">return</span> inst;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="反射获取方法"><a href="#反射获取方法" class="headerlink" title="反射获取方法"></a>反射获取方法</h4><p>首先获取Method:</p>
+<ol>
+<li>权限检查</li>
+<li>获取所有方法列表</li>
+<li>根据方法名以及方法参数获取符合条件的方法</li>
+<li>如果没有找到相关方法，则抛出异常，否则将找到的方法返回</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="keyword">public</span> Method <span class="title function_">getDeclaredMethod</span><span class="params">(String name, Class&lt;?&gt;... parameterTypes)</span></span><br><span class="line">    <span class="keyword">throws</span> NoSuchMethodException, SecurityException &#123;</span><br><span class="line">    checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), <span class="literal">true</span>);</span><br><span class="line">    <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> searchMethods(privateGetDeclaredMethods(<span class="literal">false</span>), name, parameterTypes);</span><br><span class="line">    <span class="keyword">if</span> (method == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchMethodException</span>(getName() + <span class="string">&quot;.&quot;</span> + name + argumentTypesToString(parameterTypes));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> method;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获取类所有声明的方法需要使用<code>privateGetDeclaredMethods(fasle)</code>方法：</p>
+<blockquote>
+<p>大致过程与获取构造器方法类似：</p>
+<ul>
+<li>先尝试从缓存中获取；</li>
+<li>如果缓存没有，则通过jvm获取，获取之后存入缓存，缓存使用软引用进行保存，保证内存可用</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Returns an array of &quot;root&quot; methods. These Method objects must NOT</span></span><br><span class="line"><span class="comment">// be propagated to the outside world, but must instead be copied</span></span><br><span class="line"><span class="comment">// via ReflectionFactory.copyMethod.</span></span><br><span class="line"><span class="keyword">private</span> Method[] privateGetDeclaredMethods(<span class="type">boolean</span> publicOnly) &#123;</span><br><span class="line">    checkInitted();</span><br><span class="line">    Method[] res;</span><br><span class="line">    ReflectionData&lt;T&gt; rd = reflectionData();</span><br><span class="line">    <span class="keyword">if</span> (rd != <span class="literal">null</span>) &#123;</span><br><span class="line">        res = publicOnly ? rd.declaredPublicMethods : rd.declaredMethods;</span><br><span class="line">        <span class="keyword">if</span> (res != <span class="literal">null</span>) <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// No cached value available; request value from VM</span></span><br><span class="line">    res = Reflection.filterMethods(<span class="built_in">this</span>, getDeclaredMethods0(publicOnly));</span><br><span class="line">    <span class="keyword">if</span> (rd != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (publicOnly) &#123;</span><br><span class="line">            rd.declaredPublicMethods = res;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rd.declaredMethods = res;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后根据方法名和参数类型返回指定方法：</p>
+<blockquote>
+<p>方法名以及参数类型符合则返回该方法，但是返回的是最精确匹配的方法返回，最后通过<code>copyMethod()</code>方法返回</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Method <span class="title function_">searchMethods</span><span class="params">(Method[] methods,</span></span><br><span class="line"><span class="params">                                    String name,</span></span><br><span class="line"><span class="params">                                    Class&lt;?&gt;[] parameterTypes)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">Method</span> <span class="variable">res</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 使用常量池，避免重复创建String</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">internedName</span> <span class="operator">=</span> name.intern();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; methods.length; i++) &#123;</span><br><span class="line">        <span class="type">Method</span> <span class="variable">m</span> <span class="operator">=</span> methods[i];</span><br><span class="line">        <span class="keyword">if</span> (m.getName() == internedName</span><br><span class="line">            &amp;&amp; arrayContentsEq(parameterTypes, m.getParameterTypes())</span><br><span class="line">            &amp;&amp; (res == <span class="literal">null</span></span><br><span class="line">                <span class="comment">// 判断当前循环方法返回类型是否是当前匹配到方法返回类型的子类 或者类型相同</span></span><br><span class="line">                <span class="comment">// 满足条件 替换res 使得匹配更精确</span></span><br><span class="line">                || res.getReturnType().isAssignableFrom(m.getReturnType())))</span><br><span class="line">            res = m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (res == <span class="literal">null</span> ? res : getReflectionFactory().copyMethod(res));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="调用method-invoke-方法"><a href="#调用method-invoke-方法" class="headerlink" title="调用method.invoke()方法"></a>调用<code>method.invoke()</code>方法</h4><blockquote>
+<p>invoke 是通过 MethodAccessor 进行调用的，而 MethodAccessor 是个接口，在第一次时调用 acquireMethodAccessor() 进行创建。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object obj, Object... args)</span></span><br><span class="line">    <span class="keyword">throws</span> IllegalAccessException, IllegalArgumentException,</span><br><span class="line">       InvocationTargetException</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!override) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!Reflection.quickCheckMemberAccess(clazz, modifiers)) &#123;</span><br><span class="line">            Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">            checkAccess(caller, clazz, obj, modifiers);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">MethodAccessor</span> <span class="variable">ma</span> <span class="operator">=</span> methodAccessor;             <span class="comment">// read volatile</span></span><br><span class="line">    <span class="keyword">if</span> (ma == <span class="literal">null</span>) &#123;</span><br><span class="line">        ma = acquireMethodAccessor();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ma.invoke(obj, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行 <code>ma.invoke(obj, args)</code>时，调用 <code>DelegatingMethodAccessorImpl.invoke()</code>最后被委托到 <code>NativeMethodAccessorImpl.invoke()</code>, 即：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object obj, Object[] args)</span> <span class="keyword">throws</span> IllegalArgumentException, InvocationTargetException&#123;</span><br><span class="line">    <span class="comment">// We can&#x27;t inflate methods belonging to vm-anonymous classes because</span></span><br><span class="line">    <span class="comment">// that kind of class can&#x27;t be referred to by name, hence can&#x27;t be</span></span><br><span class="line">    <span class="comment">// found from the generated bytecode.</span></span><br><span class="line">    <span class="keyword">if</span> (++numInvocations &gt; ReflectionFactory.inflationThreshold()</span><br><span class="line">            &amp;&amp; !ReflectUtil.isVMAnonymousClass(method.getDeclaringClass())) &#123;</span><br><span class="line">        <span class="type">MethodAccessorImpl</span> <span class="variable">acc</span> <span class="operator">=</span> (MethodAccessorImpl)</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">MethodAccessorGenerator</span>().</span><br><span class="line">                generateMethod(method.getDeclaringClass(),</span><br><span class="line">                               method.getName(),</span><br><span class="line">                               method.getParameterTypes(),</span><br><span class="line">                               method.getReturnType(),</span><br><span class="line">                               method.getExceptionTypes(),</span><br><span class="line">                               method.getModifiers());</span><br><span class="line">        parent.setDelegate(acc);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// invoke0 是个 native 方法，由jvm进行调用业务方法。从而完成反射调用功能。</span></span><br><span class="line">    <span class="keyword">return</span> invoke0(method, obj, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="反射的应用场景"><a href="#反射的应用场景" class="headerlink" title="反射的应用场景"></a>反射的应用场景</h4><p>平时写业务代码的时候一般很少会用到需要反射机制的场景，但反射在框架中被大量使用，比如Spring Boot、MyBaits等等。例如Java中的动态代理实现也是依赖了反射的机制。</p>
+<p>比如下面的实现动态代理的示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DebugInvocationHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 代理类中的真实对象</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object target;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DebugInvocationHandler</span><span class="params">(Object target)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> InvocationTargetException, IllegalAccessException &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;before method &quot;</span> + method.getName());</span><br><span class="line">        <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> method.invoke(target, args);</span><br><span class="line">        System.out.println(<span class="string">&quot;after method &quot;</span> + method.getName());</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="反射调用流程总结"><a href="#反射调用流程总结" class="headerlink" title="反射调用流程总结"></a>反射调用流程总结</h4><p>反射实现原理大致有如下几点：</p>
+<ol>
+<li>反射类及反射方法的获取，都是通过从列表中搜寻查找匹配的方法，所以查找性能会随类的大小方法多少而变化；</li>
+<li>每个类都会有一个与之对应的Class实例，从而每个类都可以获取method反射方法，并作用到其他实例身上；</li>
+<li>反射也是考虑了线程安全的；</li>
+<li>反射使用软引用relectionData缓存class信息，避免每次重新从jvm获取的重复开销；</li>
+<li>反射调用多次生成新代理Accessor, 而通过字节码生存的则考虑了卸载功能，所以会使用独立的类加载器；</li>
+<li>当找到需要的方法，都会copy一份出来，而不是使用原来的实例，从而保证数据隔离；</li>
+<li>调度反射方法，最终是由jvm执行invoke0()执行；</li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>java反射</p><p><a href="http://caixindi.github.io/Java/java反射/">http://caixindi.github.io/Java/java反射/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Cindy</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2023-02-23</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Java%E7%9F%A5%E8%AF%86%E7%82%B9/">Java知识点</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Java/java-io%E6%B5%81/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Java IO流</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/%E5%8D%8E%E4%B8%BA%E9%A1%B9%E7%9B%AE/kubeflow%E9%9B%86%E7%BE%A4%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E6%B5%81%E7%A8%8B/"><span class="level-item">Kubeflow集群环境搭建流程</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/20220313221114.png" alt="Cindy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Cindy</p><p class="is-size-6 is-block">Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Wuhan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">66</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">13</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">28</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/caixindi" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/caixindi"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="QQ" href="tencent://AddContact/?fromId=45&amp;fromSubId=1&amp;subcmd=all&amp;uin=1435516315&amp;website=www.oicqzone.com"><i class="fab fa-qq"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Envelope" href="mailto:caixindi98@qq.com"><i class="fas fa-envelope"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#反射"><span class="level-left"><span class="level-item">1</span><span class="level-item">反射</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#如何获取Class对象"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">如何获取Class对象</span></span></a></li><li><a class="level is-mobile" href="#Constructor类"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">Constructor类</span></span></a></li><li><a class="level is-mobile" href="#Field类及其用法"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">Field类及其用法</span></span></a></li><li><a class="level is-mobile" href="#Method类及其用法"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">Method类及其用法</span></span></a></li></ul></li><li><a class="level is-mobile" href="#反射机制的执行流程"><span class="level-left"><span class="level-item">2</span><span class="level-item">反射机制的执行流程</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#反射获取类实例"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">反射获取类实例</span></span></a></li><li><a class="level is-mobile" href="#反射获取方法"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">反射获取方法</span></span></a></li><li><a class="level is-mobile" href="#调用method-invoke-方法"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">调用method.invoke()方法</span></span></a></li><li><a class="level is-mobile" href="#反射的应用场景"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">反射的应用场景</span></span></a></li><li><a class="level is-mobile" href="#反射调用流程总结"><span class="level-left"><span class="level-item">2.5</span><span class="level-item">反射调用流程总结</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CS217/"><span class="level-start"><span class="level-item">CS217</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/EdgeX/"><span class="level-start"><span class="level-item">EdgeX</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/Git/"><span class="level-start"><span class="level-item">Git</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Golang/"><span class="level-start"><span class="level-item">Golang</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/kubeedge/"><span class="level-start"><span class="level-item">kubeedge</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%8D%8E%E4%B8%BA%E9%A1%B9%E7%9B%AE/"><span class="level-start"><span class="level-item">华为项目</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">智能计算系统</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"><span class="level-start"><span class="level-item">杂七杂八</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A1%AC%E4%BB%B6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="level-start"><span class="level-item">硬件神经网络加速</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">神经网络与深度学习</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">计算机组成与体系结构</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS217-Lecture/"><span class="tag">CS217 Lecture</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E5%B9%B3%E5%8F%B0%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX平台构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E6%8E%A8%E7%90%86/"><span class="tag">EdgeX机器学习以及推理</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX构建</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%A6%82%E5%BF%B5/"><span class="tag">EdgeX概念</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E9%83%A8%E7%BD%B2/"><span class="tag">EdgeX部署</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Git%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><span class="tag">Git使用指南</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang%E5%9C%A3%E7%BB%8F/"><span class="tag">Golang圣经</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">Java并发编程</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Java知识点</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Linux知识点</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker%E9%83%A8%E7%BD%B2/"><span class="tag">docker部署</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge/"><span class="tag">kubeedge</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge-example/"><span class="tag">kubeedge example</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeflow/"><span class="tag">kubeflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A5%BD%E7%9C%8B%E7%9A%84PowerShell/"><span class="tag">好看的PowerShell</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/"><span class="tag">快速傅里叶变换</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0/"><span class="tag">智能计算系统学习</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9A%97%E7%A1%85/"><span class="tag">暗硅</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B7%B1%E5%BA%A6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E9%AB%98%E6%95%88%E5%A4%84%E7%90%86%EF%BC%9A%E6%95%99%E7%A8%8B%E5%92%8C%E7%BB%BC%E8%BF%B0/"><span class="tag">深度神经网络的高效处理：教程和综述</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E8%83%8C%E6%99%AF%E4%BB%A5%E5%8F%8A%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/"><span class="tag">硬件加速背景以及卷积神经网络优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="tag">神经网络与深度学习</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B2%97%E7%B2%92%E5%BA%A6%E5%8F%AF%E9%87%8D%E6%9E%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%8EPlasticine/"><span class="tag">粗粒度可重构体系结构与Plasticine</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/"><span class="tag">虚拟化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="tag">计算机组成与体系结构</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="tag">轻量级神经网络加速</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E5%89%96%E6%9E%90/"><span class="tag">高性能矩阵乘法剖析</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a><p class="is-size-7"><span>&copy; 2023 Cindy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/beian.png"><a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">苏ICP备2022041101-1</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

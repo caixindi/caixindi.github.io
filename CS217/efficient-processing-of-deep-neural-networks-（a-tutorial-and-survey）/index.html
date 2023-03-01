@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Efficient Processing of Deep Neural Networks （A Tutorial and Survey） - Cindy</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#f7f7f7"><meta name="application-name" content="Cindy Page"><meta name="msapplication-TileImage" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><meta name="msapplication-TileColor" content="#f7f7f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Cindy Page"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey​        这是一篇有关于深度神经网络加速的综速。本文介绍了DNN的历史背景和作用，介绍的DNN的结构以及当前流行的DNN模型。后面不仅仅介绍了如何从硬件层面加速神经网络，也介绍了从算法，从软件，从软硬件结合的层面实现DNN加速。"><meta property="og:type" content="blog"><meta property="og:title" content="Efficient Processing of Deep Neural Networks （A Tutorial and Survey）"><meta property="og:url" content="http://caixindi.github.io/CS217/efficient-processing-of-deep-neural-networks-%EF%BC%88a-tutorial-and-survey%EF%BC%89/"><meta property="og:site_name" content="Cindy"><meta property="og:description" content="Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey​        这是一篇有关于深度神经网络加速的综速。本文介绍了DNN的历史背景和作用，介绍的DNN的结构以及当前流行的DNN模型。后面不仅仅介绍了如何从硬件层面加速神经网络，也介绍了从算法，从软件，从软硬件结合的层面实现DNN加速。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/DNN%20Timeline.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Summary%20of%20Popular%20DNNS-16342872863077.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015200717712.png"><meta property="og:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Memory%20hierarchy%20and%20data%20movement%20energy.png"><meta property="article:published_time" content="2021-12-02T16:00:00.000Z"><meta property="article:author" content="Cindy"><meta property="article:tag" content="深度神经网络的高效处理：教程和综述"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/DNN%20Timeline.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://caixindi.github.io/CS217/efficient-processing-of-deep-neural-networks-%EF%BC%88a-tutorial-and-survey%EF%BC%89/"},"headline":"Efficient Processing of Deep Neural Networks （A Tutorial and Survey）","image":["https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/DNN%20Timeline.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Summary%20of%20Popular%20DNNS-16342872863077.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015200717712.png","https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Memory%20hierarchy%20and%20data%20movement%20energy.png"],"datePublished":"2021-12-02T16:00:00.000Z","author":{"@type":"Person","name":"Cindy"},"publisher":{"@type":"Organization","name":"Cindy","logo":{"@type":"ImageObject","url":"https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg"}},"description":"Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey​        这是一篇有关于深度神经网络加速的综速。本文介绍了DNN的历史背景和作用，介绍的DNN的结构以及当前流行的DNN模型。后面不仅仅介绍了如何从硬件层面加速神经网络，也介绍了从算法，从软件，从软硬件结合的层面实现DNN加速。"}</script><link rel="canonical" href="http://caixindi.github.io/CS217/efficient-processing-of-deep-neural-networks-%EF%BC%88a-tutorial-and-survey%EF%BC%89/"><link rel="icon" href="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-72437521-5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-72437521-5');</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-12-02T16:00:00.000Z" title="12/3/2021, 12:00:00 AM">2021-12-03</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/CS217/">CS217</a></span><span class="level-item">18 分钟读完 (大约2635个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Efficient Processing of Deep Neural Networks （A Tutorial and Survey）</h1><div class="content"><h3 id="Efficient-Processing-of-Deep-Neural-Networks-A-Tutorial-and-Survey"><a href="#Efficient-Processing-of-Deep-Neural-Networks-A-Tutorial-and-Survey" class="headerlink" title="Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey"></a><a target="_blank" rel="noopener" href="https://www.rle.mit.edu/eems/wp-content/uploads/2017/11/2017_pieee_dnn.pdf">Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey</a></h3><p>​        这是一篇有关于深度神经网络加速的综速。本文介绍了DNN的历史背景和作用，介绍的DNN的结构以及当前流行的DNN模型。后面不仅仅介绍了如何从硬件层面加速神经网络，也介绍了从算法，从软件，从软硬件结合的层面实现DNN加速。</p>
+<span id="more"></span>
+
+<h4 id="1-DNN的背景"><a href="#1-DNN的背景" class="headerlink" title="1. DNN的背景"></a>1. DNN的背景</h4><ul>
+<li><p>Artificial Intelligence and DNNs</p>
+<p>讲述了人工智能、机器学习、神经网络之间的关系，这在智能计算系统的课程中已经学过。</p>
+</li>
+<li><p>Neural Networks and DNNs </p>
+<p>从神经网络到深度神经网络，深度神经网络比浅层神经网络拥有更强的表征学习能力，这使得DNN在很多任务中都能有很高的性能。</p>
+</li>
+<li><p>Inference Versus Training </p>
+<p>推理和训练，训练就是要确定神经网络中的权重和偏差的值，通常使用梯度下降法来优化损失函数。推理就是使用训练得出的神经网络来计算任务。同时也介绍了一些训练权重的方法，比如监督学习、无监督学习和半监督学习。</p>
+</li>
+<li><p>Development History</p>
+<p>这里讲了神经网络的发展历程，如图所示：</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/DNN%20Timeline.png" />
+
+<p>主要就是神经网络是什么时候提出的（1940年代），但直到1980年代后期出现了手写数字识别的LeNet网络后才被广泛使用。随着数据量增大、计算能力的提升和算法的发展，2011年微软的语音识别系统出现，基于DNN的应用才蓬勃发展起来。本文主要关注的是DNN推理的高效处理，具体的如何让DNN推理在资源有限的嵌入式设备（而不是云）上执行。</p>
+</li>
+<li><p>Applications of DNNs </p>
+<ul>
+<li>Image and video</li>
+<li>Speech and language</li>
+<li>Medical DNNs</li>
+<li>Game play</li>
+<li>Robotics DNNs</li>
+</ul>
+<p>现在DNN的应用已经非常广泛，如何实现DNN的高效处理成为了新的挑战。</p>
+</li>
+<li><p>Embedded Versus Cloud </p>
+<p>这边引出了本文的优化目标，具体来说，我们都知道训练通常需要大量的数据集以及大量的计算资源，所以训练过程通常都在在云上执行。然而在许多的应用中，出于节约通信成本、安全性（比如无人驾驶）和隐私安全的原因，都更希望推理在设备本地执行，但是执行DNN推理的嵌入式平台都有严格的能耗、计算和内存限制，在这些限制之下，如何使得DNN高效处理变得至关重要。</p>
+</li>
+</ul>
+<h4 id="2-DNN概述"><a href="#2-DNN概述" class="headerlink" title="2. DNN概述"></a>2. DNN概述</h4><p>​        这里首先介绍了处理神经网络的两种主要形式：前馈和循环。在前馈网络中，所有计算都是作为对前一层输出的一系列操作来执行的，最后一组操作生成网络的输出，网络是没有记忆的。而循环神经网络是有记忆的，它允许一些中间操作生成的值存储在网络内部，并用作其他操作的输入。</p>
+<ul>
+<li><p>Convolutional Neural Networks (CNN)</p>
+<p>卷积神经网络，由CONV（卷积层、高维）、FC（全连接层）、Pooling（池化层）、softmax层构成。常用的激活函数有Sigmoid，Tanh，ReLu</p>
+</li>
+<li><p>Popular DNN Models</p>
+<p>文中给出了一些热门的DNN模型，如表所示：</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Summary%20of%20Popular%20DNNS-16342872863077.png" />
+
+<p>文中通过上表给出了DNN的几个趋势，一个是网络越神，准确性越高；另一个是大部分计算都在卷积层，并且卷积层在权重层面也是主要方面，所以硬件加速的重点应该放在解决卷积层效率上。</p>
+</li>
+</ul>
+<h4 id="3-DNN开发资源"><a href="#3-DNN开发资源" class="headerlink" title="3.  DNN开发资源"></a>3.  DNN开发资源</h4><ul>
+<li><p>Frameworks</p>
+<p>介绍了一些深度学习框架：Caffe、TensorFlow、PyTorch。</p>
+</li>
+<li><p>Models</p>
+<p>预训练模型。</p>
+</li>
+<li><p>Popular Data Sets for Classification </p>
+<p>数据集，需要注意的是，在评估DNN准确性时，需要考虑数据集的准确性。</p>
+</li>
+<li><p>Data Sets for Other Tasks</p>
+<p>其他任务的数据集，现今最先进的DNN在图像分类任务上的表现已经优于人类的准确性，由此人们也开始挑战一些更困难的任务，比如单目标定位和目标检测。</p>
+</li>
+</ul>
+<h4 id="4-支持DNN处理的硬件"><a href="#4-支持DNN处理的硬件" class="headerlink" title="4. 支持DNN处理的硬件"></a>4. 支持DNN处理的硬件</h4><p>​        由于 DNN 的流行，许多硬件平台都针对 DNN 处理增加了新的功能。 因此，重要的是要很好地了解如何在这些平台上执行处理，以及如何为 DNN 设计特定于应用程序的加速器，以进一步提高吞吐量和能源效率。</p>
+<p>​        CONV 和 FC 层的基本组成部分是乘法累加 (MAC) 操作，它很容易实现并行化。 从架构层面来分，主要分为时间架构（CPU&#x2F;GPU）和空间架构（FPGA）。如图所示：</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/image-20211015200717712.png"  />
+
+<p>​        CPU&#x2F;GPU相对于通用架构，可以利用向量（SIMD）或者并行线程（SIMT）来提高并行性，这种架构对大量的ALU进行集中控制，但是这些ALU只能从存储器中获取数据，不能直接通信。对于任意数据流图中的一个计算，该架构往往需要多个周期才能完成。</p>
+<p>​        而加速器可以实现数据流处理，就是按照数据流图将ALU组成一个数据链，每个 ALU 可以有自己的控制逻辑和本地存储器，这样的ALU被称为PE，这样的结构非常高效，我们需要解决的问题就是如何提高数据的重用性以降低能耗。</p>
+<ul>
+<li><p>Accelerate Kernel Computation on CPU and  GPU Platforms</p>
+<p>加速CPU和GPU平台上的内核计算，在这些平台上，FC和CONV层通常都映射为矩阵乘法，完成加速的核心就是实现高性能矩阵计算（硬件和算法层面）。</p>
+</li>
+<li><p>Energy-Efficient Dataflow for Accelerators</p>
+<p>加速器的能效数据流，首先以此MAC操作至少需要4次访存操作，包括三次内存读取（用于过滤器权重、fmap激活和部分和）和一次内存写入（用于更新的部分和）。而内存访问的能耗很高，不同层级的访存能耗相差几个数量级。因此加速器第一步要做的就是减少访存，换言之就是减少数据移动的开销。</p>
+<ul>
+<li><p>多级内存层次结构（如图）</p>
+<img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/Memory%20hierarchy%20and%20data%20movement%20energy.png"/>
+
+<p>例如，与从 DRAM 中获取数据相比，从 RF 或相邻 PE 获取数据所需的能量要低一到两个数量级。因此，每次将一条数据从高能耗层次移动到低能耗层次时，我们希望尽可能多得重用该数据，从而最大限度地减少对高能耗层次的访存。</p>
+</li>
+<li><p>数据重用</p>
+<p>对于DNN，有卷积重用、特征图重用、过滤器重用。</p>
+<p>文中还介绍了几种数据流的分类方案：weight stationary，output stationary，no local reuse，row stationary。</p>
+<p>这几种方法就是每次重用的数据不一样，流动的方式也不一样。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-近数据处理"><a href="#5-近数据处理" class="headerlink" title="5. 近数据处理"></a>5. 近数据处理</h4><p>​        上一节讲了数据移动在能源消耗中占主导低位，虽然空间架构分布的片上存储器使得数据更靠近计算，但是否能够更加靠近，甚至使片外高密度存储器更靠近计算或者直接集成计算。这称为<strong>存内计算</strong>。</p>
+<ul>
+<li><p>DRAM</p>
+<p>嵌入式 DRAM (eDRAM) ，就是把DRAM嵌入到芯片里，即片上高密度存储器，可以减少切换片外电容的高能耗成本，eDRAM的密度比 SRAM高2.85 倍，比DRAM (DDR3) 的能效高 321倍，eDRAM还拥有更高的带宽和更低的延迟。此外还可以使用硅通孔（TSV）将DRAM堆叠到芯片顶部，这种技术被称为3D内存。</p>
+</li>
+<li><p>SRAM</p>
+<p>将计算引入内存，例如，乘法累加操作可以直接集成到 SRAM 阵列 的位单元中。</p>
+</li>
+<li><p>Nonvolatile Resistive Memories</p>
+<p>乘法和累加操作也可以直接集成到高级非易失性高密度存储器中，将它们用作可编程电阻元件，通常称为<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%BF%86%E9%98%BB%E5%99%A8/2196463?fr=aladdin">忆阻器</a> 。具体来说，就是以电阻的电导为权重，以电压为输入，以电流为输出，进行乘法运算。</p>
+</li>
+<li><p>Sensors</p>
+<p>在某些应用中，例如图像处理，来自传感器本身的数据移动会占系统能耗的很大一部分。 因此，也有关于在尽可能靠近传感器的地方执行计算的研究。</p>
+</li>
+</ul>
+<h4 id="6-DNN模型和硬件的协同设计"><a href="#6-DNN模型和硬件的协同设计" class="headerlink" title="6. DNN模型和硬件的协同设计"></a>6. DNN模型和硬件的协同设计</h4><p>​        早期DNN模型更加注重准确性，却没有考虑过程实现的复杂性。因此很可能导致设计难以实施和部署。因此提出了DNN模型和硬件协同设计，从而最大限度地减少能耗和成本。现在主要有两种应用方案：</p>
+<p>​        （1）降低运算和操作数的精度（从浮点到定点、减少位宽、非均匀量化和权重共享）</p>
+<p>​        （2）减小操作数量和模型大小（模型压缩、神经网络裁剪和稀疏化）</p>
+<h4 id="7-用于DNN评估和比较的基准测试指标"><a href="#7-用于DNN评估和比较的基准测试指标" class="headerlink" title="7. 用于DNN评估和比较的基准测试指标"></a>7. 用于DNN评估和比较的基准测试指标</h4><ul>
+<li><p>DNN模型指标</p>
+<ul>
+<li><p>模型在ImageNet等数据集上的top-5的准确性。</p>
+</li>
+<li><p>模型的网络架构</p>
+</li>
+<li><p>模型权重的数量（应包括非零权重数量，反应理论上的最低存储要求）</p>
+</li>
+<li><p>模型需要执行的MAC数量</p>
+</li>
+</ul>
+</li>
+<li><p>DNN硬件指标</p>
+<ul>
+<li>功耗和能耗</li>
+<li>延迟和吞吐量</li>
+<li>芯片成本（比如每乘法器的平方毫米核心面积以及所采用的工艺技术）</li>
+</ul>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Efficient Processing of Deep Neural Networks （A Tutorial and Survey）</p><p><a href="http://caixindi.github.io/CS217/efficient-processing-of-deep-neural-networks-（a-tutorial-and-survey）/">http://caixindi.github.io/CS217/efficient-processing-of-deep-neural-networks-（a-tutorial-and-survey）/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Cindy</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-12-03</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="" rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%B7%B1%E5%BA%A6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E9%AB%98%E6%95%88%E5%A4%84%E7%90%86%EF%BC%9A%E6%95%99%E7%A8%8B%E5%92%8C%E7%BB%BC%E8%BF%B0/">深度神经网络的高效处理：教程和综述</a></div><div class="sharethis-inline-share-buttons"></div><script src="//platform-api.sharethis.com/js/sharethis.js#property=5ab6f60ace89f00013641890&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/CS217/coarse-grained-reconfigurable-architectures-and-plasticine/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Coarse-Grained Reconfigurable Architectures and Plasticine</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/CS217/is-dark-silicon-useful/"><span class="level-item">Is Dark Silicon Useful</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/20220313221114.png" alt="Cindy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Cindy</p><p class="is-size-6 is-block">Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Wuhan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">66</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">13</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">28</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/caixindi" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/caixindi"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="QQ" href="tencent://AddContact/?fromId=45&amp;fromSubId=1&amp;subcmd=all&amp;uin=1435516315&amp;website=www.oicqzone.com"><i class="fab fa-qq"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Envelope" href="mailto:caixindi98@qq.com"><i class="fas fa-envelope"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#Efficient-Processing-of-Deep-Neural-Networks-A-Tutorial-and-Survey"><span class="level-left"><span class="level-item">1</span><span class="level-item">Efficient Processing of Deep  Neural Networks: A Tutorial  and Survey</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-DNN的背景"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">1. DNN的背景</span></span></a></li><li><a class="level is-mobile" href="#2-DNN概述"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">2. DNN概述</span></span></a></li><li><a class="level is-mobile" href="#3-DNN开发资源"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">3.  DNN开发资源</span></span></a></li><li><a class="level is-mobile" href="#4-支持DNN处理的硬件"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">4. 支持DNN处理的硬件</span></span></a></li><li><a class="level is-mobile" href="#5-近数据处理"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">5. 近数据处理</span></span></a></li><li><a class="level is-mobile" href="#6-DNN模型和硬件的协同设计"><span class="level-left"><span class="level-item">1.6</span><span class="level-item">6. DNN模型和硬件的协同设计</span></span></a></li><li><a class="level is-mobile" href="#7-用于DNN评估和比较的基准测试指标"><span class="level-left"><span class="level-item">1.7</span><span class="level-item">7. 用于DNN评估和比较的基准测试指标</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CS217/"><span class="level-start"><span class="level-item">CS217</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/EdgeX/"><span class="level-start"><span class="level-item">EdgeX</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/Git/"><span class="level-start"><span class="level-item">Git</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Golang/"><span class="level-start"><span class="level-item">Golang</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/kubeedge/"><span class="level-start"><span class="level-item">kubeedge</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%8D%8E%E4%B8%BA%E9%A1%B9%E7%9B%AE/"><span class="level-start"><span class="level-item">华为项目</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">智能计算系统</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"><span class="level-start"><span class="level-item">杂七杂八</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A1%AC%E4%BB%B6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="level-start"><span class="level-item">硬件神经网络加速</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">神经网络与深度学习</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="level-start"><span class="level-item">计算机组成与体系结构</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS217-Lecture/"><span class="tag">CS217 Lecture</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E5%B9%B3%E5%8F%B0%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX平台构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E6%8E%A8%E7%90%86/"><span class="tag">EdgeX机器学习以及推理</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%9E%84%E5%BB%BA/"><span class="tag">EdgeX构建</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E6%A6%82%E5%BF%B5/"><span class="tag">EdgeX概念</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/EdgeX%E9%83%A8%E7%BD%B2/"><span class="tag">EdgeX部署</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Git%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"><span class="tag">Git使用指南</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang%E5%9C%A3%E7%BB%8F/"><span class="tag">Golang圣经</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">Java并发编程</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Java知识点</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux%E7%9F%A5%E8%AF%86%E7%82%B9/"><span class="tag">Linux知识点</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker%E9%83%A8%E7%BD%B2/"><span class="tag">docker部署</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge/"><span class="tag">kubeedge</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeedge-example/"><span class="tag">kubeedge example</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kubeflow/"><span class="tag">kubeflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A5%BD%E7%9C%8B%E7%9A%84PowerShell/"><span class="tag">好看的PowerShell</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/"><span class="tag">快速傅里叶变换</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0/"><span class="tag">智能计算系统学习</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9A%97%E7%A1%85/"><span class="tag">暗硅</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B7%B1%E5%BA%A6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E9%AB%98%E6%95%88%E5%A4%84%E7%90%86%EF%BC%9A%E6%95%99%E7%A8%8B%E5%92%8C%E7%BB%BC%E8%BF%B0/"><span class="tag">深度神经网络的高效处理：教程和综述</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E8%83%8C%E6%99%AF%E4%BB%A5%E5%8F%8A%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/"><span class="tag">硬件加速背景以及卷积神经网络优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="tag">神经网络与深度学习</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B2%97%E7%B2%92%E5%BA%A6%E5%8F%AF%E9%87%8D%E6%9E%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%8EPlasticine/"><span class="tag">粗粒度可重构体系结构与Plasticine</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/"><span class="tag">虚拟化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"><span class="tag">计算机组成与体系结构</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%8A%A0%E9%80%9F/"><span class="tag">轻量级神经网络加速</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E5%89%96%E6%9E%90/"><span class="tag">高性能矩阵乘法剖析</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/cindy.svg" alt="Cindy" height="28"></a><p class="is-size-7"><span>&copy; 2023 Cindy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><img src="https://cxd-note-img.oss-cn-hangzhou.aliyuncs.com/typora-note-img/beian.png"><a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">苏ICP备2022041101-1</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Discuss on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus/discussions"><i class="fas fa-comments"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
+            outdatedBrowser({
+                bgColor: '#f25648',
+                color: '#ffffff',
+                lowerThan: 'object-fit' // display on IE11 or below
+            });
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
